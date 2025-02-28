@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,14 +23,28 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Class1.Proverka();
+           
         }
 
-        private void button1_Click(object sender, EventArgs e)
+      
+        private async void Send_password(object sender, EventArgs e)
         {
-            Random rand = new Random();
-            int num = rand.Next(1, 100);
-           /* label1.Text = num.ToString();*/
+            try
+            {
+                await HelpRegister.SendSecretKeyToEmailAsync("al.ploskikh@list.ru"); 
+
+                MessageBox.Show("Секретный ключ успешно отправлен на почту.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (SmtpException ex)
+            {
+                // Обработка ошибок SMTP
+                MessageBox.Show($"Ошибка SMTP: {ex.Message}. Код состояния: {ex.StatusCode}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                // Обработка остальных ошибок
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
