@@ -22,11 +22,5 @@ namespace WindowsFormsApp1
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Random rand = new Random();
-            int num = rand.Next(1, 100);
-            label1.Text = num.ToString();
-        }
     }
 }
