@@ -57,10 +57,10 @@
             // 
             // textBox2
             // 
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox2.Location = new System.Drawing.Point(60, 123);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(217, 13);
+            this.textBox2.Size = new System.Drawing.Size(217, 20);
             this.textBox2.TabIndex = 1;
             this.textBox2.Tag = "Введите Пароль";
             this.textBox2.Text = "Введите Пароль";
@@ -70,10 +70,10 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Location = new System.Drawing.Point(60, 83);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(217, 13);
+            this.textBox1.Size = new System.Drawing.Size(217, 20);
             this.textBox1.TabIndex = 0;
             this.textBox1.Tag = "Введите Логин";
             this.textBox1.Text = "Введите Логин";
