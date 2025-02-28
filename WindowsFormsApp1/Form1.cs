@@ -18,7 +18,7 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         private MySqlConnection connection;
-       
+
         private string secretcode = "";
         public Form1()
         {
@@ -47,20 +47,20 @@ namespace WindowsFormsApp1
             );
             textBox2.Location = new System.Drawing.Point(
               (panel1.Width - textBox2.Width) / 2,
-              (panel1.Height - textBox2.Height) / 2+30
+              (panel1.Height - textBox2.Height) / 2 + 30
             );
             button1.Location = new System.Drawing.Point(
               (panel1.Width - button1.Width) / 2,
-              (panel1.Height - button1.Height) / 2+80
+              (panel1.Height - button1.Height) / 2 + 80
             );
 
             Panel panel2 = new Panel
             {
-                Location = new Point((panel1.Width - textBox1.Width) / 2-1,
-                (panel1.Height - textBox1.Height) / 2-1),
+                Location = new Point((panel1.Width - textBox1.Width) / 2 - 1,
+                (panel1.Height - textBox1.Height) / 2 - 1),
                 Name = "panel 2",
                 Size = new Size(
-                    (textBox1.Width+2),
+                    (textBox1.Width + 2),
                     (textBox1.Height + 2)
                 ),
                 BackColor = Color.White
@@ -70,7 +70,7 @@ namespace WindowsFormsApp1
             {
                 Location = new Point((panel1.Width - textBox2.Width) / 2 - 1,
             (panel1.Height - textBox2.Height) / 2 - 1 + 30),
-                Name = "panel3", 
+                Name = "panel3",
                 Size = new Size(
             (textBox2.Width + 2),
             (textBox2.Height + 2)
@@ -82,13 +82,13 @@ namespace WindowsFormsApp1
             {
                 Location = new Point((panel1.Width - textBox2.Width) / 2,
                     (panel1.Height - button1.Height) / 2 + 65),
-                Name = "labelss", 
+                Name = "labelss",
                 Size = new Size(
                     (panel3.Width),
                     (panel3.Height)
                 ),
-                
-                Text = "" 
+
+                Text = ""
             };
             panel1.Controls.Add(labelss);
             panel1.Controls.Add(panel2);
@@ -96,77 +96,60 @@ namespace WindowsFormsApp1
 
 
         }
+
+
+
+        private async void Send_password(object sender, EventArgs e)
+        {
             try
             {
-                
-                connection.Open();
-                MessageBox.Show("Подключение успешно установлено!");
-                
+                await SendSecretKeyToEmailAsync("al.ploskikh@list.ru");
+                MessageBox.Show("Секретный ключ успешно отправлен на почту.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (SmtpException ex)
+            {
+                MessageBox.Show($"Ошибка SMTP: {ex.Message}. Код состояния: {ex.StatusCode}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при подключении к базе данных: " + ex.Message);
-            }
-            finally
-            {
-                if (connection.State == System.Data.ConnectionState.Open)
-                {
-                    connection.Close();
-                }
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        //Он должен быть тут потому тчо если его засунуть в библиотеку то он перестает работать 
+        public async Task SendSecretKeyToEmailAsync(string email)
+        {
 
-        private async void Send_password(object sender, EventArgs e)
+            try
             {
-                try
+                string smtpServer = "smtp.mail.ru";
+                int smtpPort = 587;
+                string senderEmail = "a.ploskikh@list.ru";
+                string senderPassword = "dRusv8QTzTAkxHWLZBMp";
+                string secretKey = HelpRegister.GeneratePassword(10, true, true);
+                secretcode = secretKey;
+                // Создание сообщения
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(senderEmail);
+                mail.To.Add(email);
+                mail.Subject = "Секретный ключ для двухфакторной аутентификации";
+                mail.Body = $"Ваш секретный ключ: {secretKey}\n" +
+                            $"Вы можете импортировать его в приложение для аутентификации.";
+
+                // Настройка SMTP-клиента
+                SmtpClient smtpClient = new SmtpClient(smtpServer)
                 {
-                    await SendSecretKeyToEmailAsync("al.ploskikh@list.ru");
-                    MessageBox.Show("Секретный ключ успешно отправлен на почту.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (SmtpException ex)
-                {
-                    MessageBox.Show($"Ошибка SMTP: {ex.Message}. Код состояния: {ex.StatusCode}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    Port = smtpPort,
+                    Credentials = new NetworkCredential(senderEmail, senderPassword),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Timeout = 10000
+                };
+
+                // Асинхронная отправка письма
+                await smtpClient.SendMailAsync(mail);
             }
-            //Он должен быть тут потому тчо если его засунуть в библиотеку то он перестает работать 
-            public async Task SendSecretKeyToEmailAsync(string email)
+            catch (SmtpException ex)
             {
-
-                try
-                {
-                    string smtpServer = "smtp.mail.ru";
-                    int smtpPort = 587;
-                    string senderEmail = "a.ploskikh@list.ru";
-                    string senderPassword = "dRusv8QTzTAkxHWLZBMp";
-                    string secretKey = HelpRegister.GeneratePassword(10, true, true);
-                    secretcode = secretKey;
-                    // Создание сообщения
-                    MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress(senderEmail);
-                    mail.To.Add(email);
-                    mail.Subject = "Секретный ключ для двухфакторной аутентификации";
-                    mail.Body = $"Ваш секретный ключ: {secretKey}\n" +
-                                $"Вы можете импортировать его в приложение для аутентификации.";
-
-                    // Настройка SMTP-клиента
-                    SmtpClient smtpClient = new SmtpClient(smtpServer)
-                    {
-                        Port = smtpPort,
-                        Credentials = new NetworkCredential(senderEmail, senderPassword),
-                        EnableSsl = true,
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        Timeout = 10000
-                    };
-
-                    // Асинхронная отправка письма
-                    await smtpClient.SendMailAsync(mail);
-                }
-                catch (SmtpException ex)
-                {
 
                 Console.WriteLine($"Ошибка SMTP: {ex.Message}. Код состояния: {ex.StatusCode}");
                 throw; // Переброс исключения дальше
@@ -185,10 +168,10 @@ namespace WindowsFormsApp1
             {
                 if (textBox.Tag == null)
                 {
-                    textBox.Tag = textBox.Text; 
+                    textBox.Tag = textBox.Text;
                 }
                 textBox.Text = string.Empty;
-                textBox.ForeColor = Color.Black; 
+                textBox.ForeColor = Color.Black;
             }
         }
 
@@ -198,7 +181,7 @@ namespace WindowsFormsApp1
             if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text) && textBox.Tag != null)
             {
                 textBox.Text = textBox.Tag.ToString();
-                textBox.ForeColor = Color.Black; 
+                textBox.ForeColor = Color.Black;
             }
         }
 
@@ -252,5 +235,6 @@ namespace WindowsFormsApp1
             }
         }
     }
-    }
+
+}
 
