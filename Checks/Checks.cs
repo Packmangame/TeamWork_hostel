@@ -52,6 +52,53 @@ namespace Checks
             return new string(Enumerable.Repeat(charPool, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        //Проверка на правильность вводимого пароля
+        static public string IsValidPassword (string password)
+        {
+            string SpecialSymbols = @"@$#!%^&*()-_=+[]{}\|:;',.<>/?";
+            bool hasSpec = false;
+
+            //long less 8
+            if (password.Length < 8)
+                return "long";
+
+            //have special symbols
+            foreach (char let in password)
+            {
+                if (SpecialSymbols.Contains(let))
+                {
+                    hasSpec = true;
+                    break;
+                }
+            }
+            if (hasSpec == false)
+            {
+                return "symb";
+            }
+
+            //have number
+            if (!password.Any(char.IsDigit))
+                return "num";
+
+            //have Upper
+            if (!password.Any(char.IsUpper))
+                return "up";
+
+            //have Lower
+            if (!password.Any(char.IsLower))
+                return "low";
+
+            string [ ] commonPasswords = { "password", "123456", "qwerty", "abc123", "admin" };
+            if (commonPasswords.Any(common => password.IndexOf(common, StringComparison.OrdinalIgnoreCase) >= 0))
+                return "com";
+
+            //all is good
+            return "";
+
+        }
     }
+
+    
 
 }
