@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Checks;
+
 
 namespace WindowsFormsApp1
 {
@@ -20,7 +22,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            Class1.Proverka();
         }
 
         private void button1_Click(object sender, EventArgs e)
