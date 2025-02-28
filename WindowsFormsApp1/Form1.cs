@@ -26,7 +26,7 @@ namespace WindowsFormsApp1
         {
             Random rand = new Random();
             int num = rand.Next(1, 100);
-            label1.Text = num.ToString();
+           /* label1.Text = num.ToString();*/
         }
     }
 }
