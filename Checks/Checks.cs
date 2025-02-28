@@ -30,24 +30,63 @@ namespace Checks
             return code.Equals(usercode, StringComparison.Ordinal);
         }
 
-        //Проверка даты
-        public static bool IsEighteen (DateTime dateOfBirth)
+        //Проверка пароля на валидность
+        static public string IsValidPassword(string password)
         {
-            DateTime today = DateTime.Today;
-            int age = today.Year - dateOfBirth.Year;
+            string SpecialSymbols = @"@$#!%^&*()-_=+[]{}\|:;',.<>/?";
+            bool hasSpec = false;
 
-            // Учитываем случай, если день рождения ещё не наступил в этом году
-            if (dateOfBirth.Date > today.AddYears(-age))
+            //long less 8
+            if (password.Length < 8)
+                return "Ваш пароль должен быть больше 8 символов";
+
+            //have special symbols
+            foreach (char let in password)
             {
-                age--;
+                if (SpecialSymbols.Contains(let))
+                {
+                    hasSpec = true;
+                    break;
+                }
+            }
+            if (hasSpec == false)
+            {
+                return "Ваш пароль должен содержать специальные сиволы";
             }
 
-            return age >= 18;
+            //have number
+            if (!password.Any(char.IsDigit))
+                return "Ваш пароль должег содержать цифры";
+            if (password == "Введите пароль")
+                return "Введиете пароль";
+
+            //have Upper
+            if (!password.Any(char.IsUpper))
+                return "Ваш пароль должен содердать сиволы с верхним регистром";
+
+            //have Lower
+            if (!password.Any(char.IsLower))
+                return "Ваш пароль должен содердать сиволы с нижним регистром";
+
+            string[] commonPasswords = { "password", "123456", "qwerty", "abc123", "admin" };
+            if (commonPasswords.Any(common => password.IndexOf(common, StringComparison.OrdinalIgnoreCase) >= 0))
+                return "Ваш пароль слишком легкий";
+
+            //all is good
+            return "";
+
         }
 
-        public static bool LessToday(DateTime date)
+        //Проверка совпадения пароля
+        static public bool Matching_passwords(string password)
         {
-            return DateTime.Today < date;
+            return true;
+        }
+
+        //Проверка совпадения Логина
+        static public bool Matching_login(string password)
+        {
+            return true;
         }
     }
     
@@ -74,49 +113,7 @@ namespace Checks
         }
 
         //Проверка на правильность вводимого пароля
-        static public string IsValidPassword (string password)
-        {
-            string SpecialSymbols = @"@$#!%^&*()-_=+[]{}\|:;',.<>/?";
-            bool hasSpec = false;
-
-            //long less 8
-            if (password.Length < 8)
-                return "long";
-
-            //have special symbols
-            foreach (char let in password)
-            {
-                if (SpecialSymbols.Contains(let))
-                {
-                    hasSpec = true;
-                    break;
-                }
-            }
-            if (hasSpec == false)
-            {
-                return "symb";
-            }
-
-            //have number
-            if (!password.Any(char.IsDigit))
-                return "num";
-
-            //have Upper
-            if (!password.Any(char.IsUpper))
-                return "up";
-
-            //have Lower
-            if (!password.Any(char.IsLower))
-                return "low";
-
-            string [ ] commonPasswords = { "password", "123456", "qwerty", "abc123", "admin" };
-            if (commonPasswords.Any(common => password.IndexOf(common, StringComparison.OrdinalIgnoreCase) >= 0))
-                return "com";
-
-            //all is good
-            return "";
-
-        }
+        
     }
 
     

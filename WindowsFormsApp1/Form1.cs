@@ -16,7 +16,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        
+
         public Form1()
         {
            /* MessageBox.Show("Hello World!");*/
@@ -29,7 +29,65 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-           
+            panel1.Location = new System.Drawing.Point(
+                (this.ClientSize.Width - panel1.Width) / 2,
+                (this.ClientSize.Height - panel1.Height) / 2
+            );
+
+            textBox1.Location = new System.Drawing.Point(
+               (panel1.Width - textBox1.Width) / 2,
+               (panel1.Height - textBox1.Height) / 2
+            );
+            textBox2.Location = new System.Drawing.Point(
+              (panel1.Width - textBox2.Width) / 2,
+              (panel1.Height - textBox2.Height) / 2+30
+            );
+            button1.Location = new System.Drawing.Point(
+              (panel1.Width - button1.Width) / 2,
+              (panel1.Height - button1.Height) / 2+80
+            );
+
+            Panel panel2 = new Panel
+            {
+                Location = new Point((panel1.Width - textBox1.Width) / 2-1,
+                (panel1.Height - textBox1.Height) / 2-1),
+                Name = "panel 2",
+                Size = new Size(
+                    (textBox1.Width+2),
+                    (textBox1.Height + 2)
+                ),
+                BackColor = Color.White
+            };
+
+            Panel panel3 = new Panel
+            {
+                Location = new Point((panel1.Width - textBox2.Width) / 2 - 1,
+            (panel1.Height - textBox2.Height) / 2 - 1 + 30),
+                Name = "panel3", 
+                Size = new Size(
+            (textBox2.Width + 2),
+            (textBox2.Height + 2)
+        ),
+                BackColor = Color.White
+            };
+
+            Label labelss = new Label
+            {
+                Location = new Point((panel1.Width - textBox2.Width) / 2,
+                    (panel1.Height - button1.Height) / 2 + 65),
+                Name = "labelss", 
+                Size = new Size(
+                    (panel3.Width),
+                    (panel3.Height)
+                ),
+                
+                Text = "" 
+            };
+            panel1.Controls.Add(labelss);
+            panel1.Controls.Add(panel2);
+            panel1.Controls.Add(panel3);
+
+
         }
 
       
@@ -92,6 +150,80 @@ namespace WindowsFormsApp1
             {
                 Console.WriteLine($"Произошла ошибка: {ex.Message}");
                 throw; // Переброс исключения дальше
+            }
+        }
+
+        private void Text_Fading(object sender, EventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox != null && textBox.Text == textBox.Tag?.ToString())
+            {
+                if (textBox.Tag == null)
+                {
+                    textBox.Tag = textBox.Text; 
+                }
+                textBox.Text = string.Empty;
+                textBox.ForeColor = Color.Black; 
+            }
+        }
+
+        private void Text_Return(object sender, EventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text) && textBox.Tag != null)
+            {
+                textBox.Text = textBox.Tag.ToString();
+                textBox.ForeColor = Color.Black; 
+            }
+        }
+
+        private void Entrance(object sender, EventArgs e)
+        {
+            string error = Checks.Checks.IsValidPassword(textBox2.Text); // Получаем результат проверки пароля
+
+            if (!string.IsNullOrEmpty(error)) // Если есть ошибка
+            {
+                // Изменяем цвет panel3 на красный
+                foreach (Control control in panel1.Controls)
+                {
+                    if (control is Panel panel && panel.Name == "panel3") // Находим panel3
+                    {
+                        panel.BackColor = Color.Red; // Устанавливаем красный цвет
+                        break;
+                    }
+                }
+
+                // Выводим текст ошибки в labelss
+                foreach (Control control in panel1.Controls)
+                {
+                    if (control is Label label && label.Name == "labelss") // Находим labelss
+                    {
+                        label.Text = error; // Устанавливаем текст ошибки
+                        label.ForeColor = Color.Red; // Устанавливаем красный цвет текста
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Если ошибок нет, возвращаем исходные значения
+                foreach (Control control in panel1.Controls)
+                {
+                    if (control is Panel panel && panel.Name == "panel3") // Находим panel3
+                    {
+                        panel.BackColor = Color.White; // Возвращаем белый цвет
+                        break;
+                    }
+                }
+
+                foreach (Control control in panel1.Controls)
+                {
+                    if (control is Label label && label.Name == "labelss") // Находим labelss
+                    {
+                        label.Text = ""; // Очищаем текст
+                        break;
+                    }
+                }
             }
         }
     }
