@@ -29,6 +29,26 @@ namespace Checks
 
             return code.Equals(usercode, StringComparison.Ordinal);
         }
+
+        //Проверка даты
+        public static bool IsEighteen (DateTime dateOfBirth)
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - dateOfBirth.Year;
+
+            // Учитываем случай, если день рождения ещё не наступил в этом году
+            if (dateOfBirth.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age >= 18;
+        }
+
+        public static bool LessToday(DateTime date)
+        {
+            return DateTime.Today < date;
+        }
     }
     
 
