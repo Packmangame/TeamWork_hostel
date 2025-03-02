@@ -36,6 +36,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             try
             {
                 connection.Open();
@@ -53,7 +54,6 @@ namespace WindowsFormsApp1
                     connection.Close();
                 }
             }
-
             panel1.Location = new System.Drawing.Point(
                 (this.ClientSize.Width - panel1.Width) / 2,
                 (this.ClientSize.Height - panel1.Height) / 2
@@ -205,53 +205,58 @@ namespace WindowsFormsApp1
 
         private void Entrance(object sender, EventArgs e)
         {
-            string error = Checks.Checks.IsValidPassword(textBox2.Text); // Получаем результат проверки пароля
+            string error = Checks.Checks.IsValidPassword(textBox2.Text); 
 
-            if (!string.IsNullOrEmpty(error)) // Если есть ошибка
+            if (!string.IsNullOrEmpty(error)) 
             {
-                // Изменяем цвет panel3 на красный
                 foreach (Control control in panel1.Controls)
                 {
-                    if (control is Panel panel && panel.Name == "panel3") // Находим panel3
+                    if (control is Panel panel && panel.Name == "panel3") 
                     {
-                        panel.BackColor = Color.Red; // Устанавливаем красный цвет
+                        panel.BackColor = Color.Red; 
                         break;
                     }
                 }
 
-                // Выводим текст ошибки в labelss
                 foreach (Control control in panel1.Controls)
                 {
-                    if (control is Label label && label.Name == "labelss") // Находим labelss
+                    if (control is Label label && label.Name == "labelss") 
                     {
-                        label.Text = error; // Устанавливаем текст ошибки
-                        label.ForeColor = Color.Red; // Устанавливаем красный цвет текста
+                        label.Text = error; 
+                        label.ForeColor = Color.Red; 
                         break;
                     }
                 }
             }
             else
             {
-                // Если ошибок нет, возвращаем исходные значения
                 foreach (Control control in panel1.Controls)
                 {
-                    if (control is Panel panel && panel.Name == "panel3") // Находим panel3
+                    if (control is Panel panel && panel.Name == "panel3") 
                     {
-                        panel.BackColor = Color.White; // Возвращаем белый цвет
+                        panel.BackColor = Color.White; 
                         break;
                     }
                 }
 
                 foreach (Control control in panel1.Controls)
                 {
-                    if (control is Label label && label.Name == "labelss") // Находим labelss
+                    if (control is Label label && label.Name == "labelss") 
                     {
-                        label.Text = ""; // Очищаем текст
+                        label.Text = ""; 
                         break;
                     }
                 }
             }
+
+            Admin adminForm = new Admin();
+            adminForm.Show();
+            /*this.Hide();*/
+
+
         }
+
+        
     }
 
 }
