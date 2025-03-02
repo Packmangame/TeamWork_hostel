@@ -58,7 +58,6 @@ namespace WindowsFormsApp1
             panel2.Width = this.Width;
             panel2.Height = this.Height - ((90 * this.Height) / 100);
             panel2.Location= new System.Drawing.Point(0,0);
-            panel2.BackColor= System.Drawing.Color.Yellow;
             //search
             textBox1.Width = this.Width - ((20 * this.Width) / 100);
             textBox1.Height = panel2.Height - ((70 * panel2.Height) / 100);
@@ -72,13 +71,18 @@ namespace WindowsFormsApp1
             pictureBox1.Height = panel2.Height - ((70 * panel2.Height) / 100);
             pictureBox1.Width = pictureBox1.Height;
 
-
-
             //side menu
             panel1.Width = (this.Width - textBox1.Width)/2;
             panel1.Height = this.Height-panel2.Height;
             panel1.Location = new System.Drawing.Point(-panel1.Width, panel2.Height);
             panel1.BackColor = System.Drawing.Color.Red;
+            
+            //main place
+            panel3.Location= new System.Drawing.Point(
+                (this.Width - textBox1.Width) / 2,this.Height - ((90 * this.Height) / 100));
+            panel3.Width=this.Width-panel1.Width*2;
+            panel3.Height=this.Height-panel2.Height;
+            panel3.BackColor = System.Drawing.Color.Pink;
 
         }
 
@@ -86,11 +90,15 @@ namespace WindowsFormsApp1
         {
             if (panel1.Location.X < 0)
             {
-                targetX = 0; 
+                targetX = 0;
+                panel3.BackColor = Color.FromArgb(173, 183, 185);
+                this.BackColor= Color.FromArgb(173, 183, 185);
             }
             else
             {
-                targetX = -panel1.Width; 
+                targetX = -panel1.Width;
+                panel3.BackColor = Color.FromArgb(243, 253, 255);
+                this.BackColor = Color.FromArgb(243, 253, 255);
             }
 
             timer.Start();
