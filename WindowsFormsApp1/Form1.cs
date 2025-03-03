@@ -37,23 +37,7 @@ namespace WindowsFormsApp1
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            try
-            {
-                connection.Open();
-                MessageBox.Show("Подключение успешно установлено!");
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ошибка при подключении к базе данных: " + ex.Message);
-            }
-            finally
-            {
-                if (connection.State == System.Data.ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-            }
+           
             panel1.Location = new System.Drawing.Point(
                 (this.ClientSize.Width - panel1.Width) / 2,
                 (this.ClientSize.Height - panel1.Height) / 2
