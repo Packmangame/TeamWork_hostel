@@ -113,6 +113,7 @@ namespace WindowsFormsApp1
                 control.Width=(int)(panel1.Width*0.8);
                 control.Height = 20;
                 control.Top += 10;
+                
                 if (control is Button)
                 {
                     control.Top += 40;
@@ -124,6 +125,21 @@ namespace WindowsFormsApp1
                     
                 }
             }
+            //filter_users
+            foreach (Control control in filter_users.Controls)
+            {
+                control.Width = (int)(panel1.Width * 0.8);
+                control.Height = 20;
+                control.Top += 10;
+                if (control is Button)
+                {
+                    control.Top += 40;
+                    control.Height = 25;
+                }
+            }
+            
+
+
 
 
 
@@ -227,17 +243,45 @@ namespace WindowsFormsApp1
                         case "list_of_peoples":
                             LoadListOfPeoples();
                             break;
+                        case "populate":
+                            Add_Populate();
+                            break;
                     }
                     break;
                 }
             }
         }
 
+        private void Add_Populate()
+        {
+            dataGridView3.DataSource = sqlRequest.ExecuteQuery("Rooms");
+            dataGridView2.DataSource = sqlRequest.ExecuteQuery("Users");
+            panel7.Dock = DockStyle.Fill;
+            panel7.Size=panel3.Size ;
+            dataGridView2.Width = (int)(panel7.Width * 0.8);
+            dataGridView2.Height = (int)(panel7.Height * 0.3);
+            dataGridView3.Size = dataGridView2.Size;
+            //Add_panel
+            label13.Location = new Point((panel7.Width - label13.Width) / 2, 10);
+            dataGridView2.Location = new Point((panel7.Width - dataGridView2.Width) / 2, label13.Bottom + 10);
+            label14.Location = new Point(dataGridView2.Left, dataGridView2.Bottom + 5);
+            label15.Location = new Point((panel7.Width - label15.Width) / 3, label14.Bottom + 10);
+            date_entry.Location= new Point((label15.Left - label15.Width/2), label15.Bottom + 10);
+            date_entry.Width = label15.Width * 2;
+            label16.Location= new Point(label15.Right*((panel7.Width - label15.Width) / 3), label14.Bottom + 10);
+
+
+
+        }
+
+
+
+
+
         //Загрузка карточек с комнатами
         private void LoadRoomPanels()
         {
-            
-            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width , panel5.Height);
+            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width, panel5.Height);
 
             if (roomPanels != null && roomPanels.Any())
             {
@@ -273,7 +317,7 @@ namespace WindowsFormsApp1
                 {
                     // Вызываем метод из библиотеки классов
                     Sql_Request sqlRequest = new Sql_Request();
-                    DataTable details = sqlRequest.LoadChildren(idu); // Предполагается, что такой метод существует
+                    DataTable details = sqlRequest.LoadChildren(idu); 
 
                     if (details != null && details.Rows.Count > 0)
                     {
@@ -296,7 +340,7 @@ namespace WindowsFormsApp1
             }
         }
         
-        //Фильтрация 
+        //Фильтрация комнат
         private void Filter_click(object sender, EventArgs e)
         {
             var (bedsMin, bedsMax) = GetBedsFilter();
@@ -324,7 +368,7 @@ namespace WindowsFormsApp1
                 MessageBox.Show("Нет комнат, соответствующих выбранным фильтрам.");
             }
         }
-
+        //Получение+перевод данных по кроватке
         private (int? bedsMin, int? bedsMax) GetBedsFilter()
         {
             int minBeds = trackBar1.Minimum;
@@ -333,7 +377,7 @@ namespace WindowsFormsApp1
             return (minBeds == trackBar1.Minimum ? (int?)null : minBeds,
                     maxBeds == trackBar1.Maximum ? (int?)null : maxBeds);
         }
-
+        //Получение+перевод состояние комнаты
         private List<int> GetConditionIdsFilter()
         {
             List<int> selectedConditionIds = new List<int>();
@@ -346,7 +390,7 @@ namespace WindowsFormsApp1
             }
             return selectedConditionIds;
         }
-
+        //Получение+перевод статуса комнаты
         private List<bool?> GetStatusesFilter()
         {
             List<bool?> selectedStatuses = new List<bool?>();
@@ -363,5 +407,151 @@ namespace WindowsFormsApp1
             }
             return selectedStatuses;
         }
+        //Фильтрация пользователей
+        private void Filter_users(object sender, EventArgs e)
+        {
+
+        }
+
+        //Поиск места проживания
+        private void Find_room_living(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                int idu;
+                if (int.TryParse(dataGridView1.SelectedRows[0].Cells["IDU"].Value?.ToString(), out idu))
+                {
+                    // Вызываем метод из библиотеки классов
+                    Sql_Request sqlRequest = new Sql_Request();
+                    DataTable details = sqlRequest.GetCurrentResidence(idu);
+
+                    if (details != null && details.Rows.Count > 0)
+                    {
+                        // Отображаем детали (например, в новой форме или MessageBox)
+                        dataGridView1.DataSource = details;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Детали не найдены.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Неверный формат IDU.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите строку в таблице.");
+            }
+        }
+
+        //Поиск будующих резерваций
+        private void Find_reservation(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                int idu;
+                if (int.TryParse(dataGridView1.SelectedRows[0].Cells["IDU"].Value?.ToString(), out idu))
+                {
+                    // Вызываем метод из библиотеки классов
+                    Sql_Request sqlRequest = new Sql_Request();
+                    DataTable details = sqlRequest.GetFutureReservations(idu);
+
+                    if (details != null && details.Rows.Count > 0)
+                    {
+                        // Отображаем детали (например, в новой форме или MessageBox)
+                        dataGridView1.DataSource = details;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Детали не найдены.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Неверный формат IDU.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите строку в таблице.");
+            }
+        }
+
+        private void Change_of_living(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+
+                if (row.Cells["IDU"] == null || row.Cells["IDU"].Value == null)
+                {
+                    MessageBox.Show("Ошибка: отсутствует ID пользователя.");
+                    return;
+                }
+                int idUser = Convert.ToInt32(row.Cells["IDU"].Value);
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "Reservation")
+                {
+                    bool reservationValue;
+                    if (bool.TryParse(row.Cells["Reservation"].Value?.ToString(), out reservationValue))
+                    {
+                        sqlRequest.UpdateUserReservation(idUser, reservationValue);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Неверное значение для поля Reservation.");
+                    }
+                }
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "Lives_in")
+                {
+                    // Проверяем, что событие было вызвано для существующей строки и столбца
+                    if (e.RowIndex < 0 || e.ColumnIndex < 0 || dataGridView1.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Выберите строку в таблице.");
+                        return;
+                    }
+
+                    // Получаем текущую строку
+                    DataGridViewRow row1 = dataGridView1.Rows[e.RowIndex];
+
+                    // Проверяем, что строка содержит данные
+                    if (row1.Cells["IDU"] == null || row1.Cells["IDU"].Value == null)
+                    {
+                        MessageBox.Show("Ошибка: отсутствует ID пользователя.");
+                        return;
+                    }
+
+                    // Получаем ID пользователя
+                    int idUser1;
+                    if (!int.TryParse(row1.Cells["IDU"].Value?.ToString(), out idUser1))
+                    {
+                        MessageBox.Show("Неверный формат ID пользователя.");
+                        return;
+                    }
+
+                    // Проверяем, что изменено поле "Lives_in"
+                    if (dataGridView1.Columns[e.ColumnIndex].Name != "Lives_in")
+                    {
+                        return; // Игнорируем изменения в других полях
+                    }
+
+                    // Получаем новое значение поля "Lives_in"
+                    bool livesInValue;
+                    if (!bool.TryParse(row.Cells["Lives_in"].Value?.ToString(), out livesInValue))
+                    {
+                        MessageBox.Show("Неверное значение для поля Lives_in.");
+                        return;
+                    }
+
+                    // Обновляем статус проживания в базе данных
+                    sqlRequest.UpdateLivingAndRoomStatus(idUser, livesInValue);
+                }
+            }
+        }
+
+       
+
+
     }
 }

@@ -59,14 +59,34 @@
             this.label2 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.button8 = new System.Windows.Forms.Button();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.dep_date = new System.Windows.Forms.DateTimePicker();
+            this.date_entry = new System.Windows.Forms.DateTimePicker();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.label13 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.просмотретьДетейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.просмотретьРезервациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.просмотретьНомерПроживанияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel5 = new System.Windows.Forms.Panel();
             this.filter_panel = new System.Windows.Forms.Panel();
-            this.panel12 = new System.Windows.Forms.Panel();
-            this.panel11 = new System.Windows.Forms.Panel();
+            this.filter_users = new System.Windows.Forms.Panel();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.button7 = new System.Windows.Forms.Button();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.filter_users1 = new System.Windows.Forms.Panel();
             this.filter_rooms = new System.Windows.Forms.Panel();
             this.button6 = new System.Windows.Forms.Button();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
@@ -81,10 +101,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.filter_panel.SuspendLayout();
+            this.filter_users.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.filter_rooms.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -374,11 +400,138 @@
             // panel7
             // 
             this.panel7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.panel7.Controls.Add(this.button8);
+            this.panel7.Controls.Add(this.numericUpDown1);
+            this.panel7.Controls.Add(this.label18);
+            this.panel7.Controls.Add(this.label17);
+            this.panel7.Controls.Add(this.dataGridView3);
+            this.panel7.Controls.Add(this.dep_date);
+            this.panel7.Controls.Add(this.date_entry);
+            this.panel7.Controls.Add(this.label16);
+            this.panel7.Controls.Add(this.label15);
+            this.panel7.Controls.Add(this.label14);
+            this.panel7.Controls.Add(this.dataGridView2);
+            this.panel7.Controls.Add(this.label13);
             this.panel7.Location = new System.Drawing.Point(253, 3);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(128, 616);
             this.panel7.TabIndex = 5;
             this.panel7.Tag = "populate";
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(7, 319);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(116, 23);
+            this.button8.TabIndex = 11;
+            this.button8.Text = "Заселить";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Visible = false;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(7, 85);
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown1.TabIndex = 10;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Visible = false;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 68);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(116, 13);
+            this.label18.TabIndex = 9;
+            this.label18.Text = "Кол-во проживающих";
+            this.label18.Visible = false;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(7, 188);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(159, 13);
+            this.label17.TabIndex = 8;
+            this.label17.Text = "Выберите комнату заселения";
+            this.label17.Visible = false;
+            // 
+            // dataGridView3
+            // 
+            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView3.Location = new System.Drawing.Point(7, 210);
+            this.dataGridView3.Name = "dataGridView3";
+            this.dataGridView3.Size = new System.Drawing.Size(118, 103);
+            this.dataGridView3.TabIndex = 7;
+            this.dataGridView3.Visible = false;
+            // 
+            // dep_date
+            // 
+            this.dep_date.Location = new System.Drawing.Point(7, 161);
+            this.dep_date.Name = "dep_date";
+            this.dep_date.Size = new System.Drawing.Size(118, 20);
+            this.dep_date.TabIndex = 6;
+            // 
+            // date_entry
+            // 
+            this.date_entry.Location = new System.Drawing.Point(7, 140);
+            this.date_entry.Name = "date_entry";
+            this.date_entry.Size = new System.Drawing.Size(118, 20);
+            this.date_entry.TabIndex = 5;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(7, 123);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(74, 13);
+            this.label16.TabIndex = 4;
+            this.label16.Text = "Дата выезда";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(7, 110);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(90, 13);
+            this.label15.TabIndex = 3;
+            this.label15.Text = "Дата заселения";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 49);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(151, 13);
+            this.label14.TabIndex = 2;
+            this.label14.Text = "Добавить в базу (Если нету)";
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(7, 24);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(118, 22);
+            this.dataGridView2.TabIndex = 1;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 7);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(101, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "Выберите клиента";
             // 
             // panel6
             // 
@@ -400,21 +553,38 @@
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.Size = new System.Drawing.Size(114, 150);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.Change_of_living);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.просмотретьДетейToolStripMenuItem});
+            this.просмотретьДетейToolStripMenuItem,
+            this.просмотретьРезервациюToolStripMenuItem,
+            this.просмотретьНомерПроживанияToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(182, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(260, 70);
             // 
             // просмотретьДетейToolStripMenuItem
             // 
             this.просмотретьДетейToolStripMenuItem.Name = "просмотретьДетейToolStripMenuItem";
-            this.просмотретьДетейToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.просмотретьДетейToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
             this.просмотретьДетейToolStripMenuItem.Text = "Просмотреть детей";
             this.просмотретьДетейToolStripMenuItem.Click += new System.EventHandler(this.Find_Children);
+            // 
+            // просмотретьРезервациюToolStripMenuItem
+            // 
+            this.просмотретьРезервациюToolStripMenuItem.Name = "просмотретьРезервациюToolStripMenuItem";
+            this.просмотретьРезервациюToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+            this.просмотретьРезервациюToolStripMenuItem.Text = "Просмотреть резервацию";
+            this.просмотретьРезервациюToolStripMenuItem.Click += new System.EventHandler(this.Find_reservation);
+            // 
+            // просмотретьНомерПроживанияToolStripMenuItem
+            // 
+            this.просмотретьНомерПроживанияToolStripMenuItem.Name = "просмотретьНомерПроживанияToolStripMenuItem";
+            this.просмотретьНомерПроживанияToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+            this.просмотретьНомерПроживанияToolStripMenuItem.Text = "Просмотреть номер проживания";
+            this.просмотретьНомерПроживанияToolStripMenuItem.Click += new System.EventHandler(this.Find_room_living);
             // 
             // panel5
             // 
@@ -428,8 +598,8 @@
             // 
             // filter_panel
             // 
-            this.filter_panel.Controls.Add(this.panel12);
-            this.filter_panel.Controls.Add(this.panel11);
+            this.filter_panel.Controls.Add(this.filter_users);
+            this.filter_panel.Controls.Add(this.filter_users1);
             this.filter_panel.Controls.Add(this.filter_rooms);
             this.filter_panel.Location = new System.Drawing.Point(3, 178);
             this.filter_panel.Name = "filter_panel";
@@ -438,23 +608,88 @@
             this.filter_panel.Tag = "filter";
             this.filter_panel.Visible = false;
             // 
-            // panel12
+            // filter_users
             // 
-            this.panel12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.panel12.Location = new System.Drawing.Point(10, 233);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(186, 220);
-            this.panel12.TabIndex = 1;
-            this.panel12.Tag = "list_of_peoples";
+            this.filter_users.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.filter_users.Controls.Add(this.trackBar2);
+            this.filter_users.Controls.Add(this.button7);
+            this.filter_users.Controls.Add(this.checkBox4);
+            this.filter_users.Controls.Add(this.label12);
+            this.filter_users.Controls.Add(this.checkBox3);
+            this.filter_users.Controls.Add(this.checkBox2);
+            this.filter_users.Location = new System.Drawing.Point(10, 233);
+            this.filter_users.Name = "filter_users";
+            this.filter_users.Size = new System.Drawing.Size(186, 220);
+            this.filter_users.TabIndex = 1;
+            this.filter_users.Tag = "list_of_peoples";
             // 
-            // panel11
+            // trackBar2
             // 
-            this.panel11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.panel11.Location = new System.Drawing.Point(206, 4);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(197, 449);
-            this.panel11.TabIndex = 1;
-            this.panel11.Tag = "list_of_reservation";
+            this.trackBar2.Location = new System.Drawing.Point(3, 24);
+            this.trackBar2.Maximum = 2025;
+            this.trackBar2.Minimum = 1900;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(180, 45);
+            this.trackBar2.TabIndex = 1;
+            this.trackBar2.Value = 1900;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(3, 142);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(145, 32);
+            this.button7.TabIndex = 8;
+            this.button7.Text = "Предоставить";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.Filter_users);
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(3, 122);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(121, 17);
+            this.checkBox4.TabIndex = 4;
+            this.checkBox4.Text = "Проживает сейчас";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 8);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(78, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Год рождения";
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(3, 99);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(87, 17);
+            this.checkBox3.TabIndex = 3;
+            this.checkBox3.Text = "Резервация";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(3, 76);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(52, 17);
+            this.checkBox2.TabIndex = 2;
+            this.checkBox2.Text = "Дети";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // filter_users1
+            // 
+            this.filter_users1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.filter_users1.Location = new System.Drawing.Point(206, 4);
+            this.filter_users1.Name = "filter_users1";
+            this.filter_users1.Size = new System.Drawing.Size(197, 449);
+            this.filter_users1.TabIndex = 1;
+            this.filter_users1.Tag = "list_of_reservation";
             // 
             // filter_rooms
             // 
@@ -501,7 +736,7 @@
             this.checkedListBox1.Items.AddRange(new object[] {
             "Проживают",
             "Не проживают"});
-            this.checkedListBox1.Location = new System.Drawing.Point(6, 163);
+            this.checkedListBox1.Location = new System.Drawing.Point(8, 163);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(120, 19);
             this.checkedListBox1.TabIndex = 5;
@@ -509,7 +744,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(5, 147);
+            this.label11.Location = new System.Drawing.Point(8, 147);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(121, 13);
             this.label11.TabIndex = 4;
@@ -518,7 +753,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(3, 64);
+            this.label10.Location = new System.Drawing.Point(8, 64);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(161, 13);
             this.label10.TabIndex = 3;
@@ -527,7 +762,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(5, 2);
+            this.label9.Location = new System.Drawing.Point(8, 2);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(133, 13);
             this.label9.TabIndex = 1;
@@ -572,10 +807,18 @@
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.panel6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.filter_panel.ResumeLayout(false);
+            this.filter_users.ResumeLayout(false);
+            this.filter_users.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.filter_rooms.ResumeLayout(false);
             this.filter_rooms.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
@@ -616,14 +859,13 @@
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem просмотретьДетейToolStripMenuItem;
         private System.Windows.Forms.Panel filter_panel;
         private System.Windows.Forms.Panel filter_rooms;
-        private System.Windows.Forms.Panel panel12;
-        private System.Windows.Forms.Panel panel11;
+        private System.Windows.Forms.Panel filter_users;
+        private System.Windows.Forms.Panel filter_users1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label label11;
@@ -632,5 +874,26 @@
         private MySql.Data.MySqlClient.MySqlCommand mySqlCommand1;
         private System.Windows.Forms.CheckedListBox checkedListBox2;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ToolStripMenuItem просмотретьРезервациюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem просмотретьНомерПроживанияToolStripMenuItem;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.DataGridView dataGridView3;
+        private System.Windows.Forms.DateTimePicker dep_date;
+        private System.Windows.Forms.DateTimePicker date_entry;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Panel panel5;
     }
 }
