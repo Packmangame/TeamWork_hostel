@@ -37,7 +37,7 @@
       <HintPath>..\packages\BouncyCastle.Cryptography.2.3.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="Checks">
-      <HintPath>..\Checks\bin\Debug\Checks.dll</HintPath>
+      <HintPath>..\Checks\obj\Debug\Checks.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.26.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.26.1\lib\net45\Google.Protobuf.dll</HintPath>
@@ -148,6 +148,9 @@
     <EmbeddedResource Include="Admin.resx">
       <DependentUpon>Admin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Builder.resx">
+      <DependentUpon>Builder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -158,6 +161,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Storekeeper.resx">
+      <DependentUpon>Storekeeper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SysAdmin.resx">
+      <DependentUpon>SysAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Washer.resx">
+      <DependentUpon>Washer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

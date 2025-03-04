@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -9,8 +10,8 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Checks;
 using MySql.Data.MySqlClient;
+using Checks;
 
 
 namespace WindowsFormsApp1
@@ -18,6 +19,15 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         private MySqlConnection connection;
+
+        Sql_Requests_Enter enter = new Sql_Requests_Enter( );
+
+        Admin admin = new Admin( );
+        Builder builder = new Builder( );
+        Caretaker caretaker = new Caretaker( );
+        Storekeeper storekeeper = new Storekeeper( );
+        SysAdmin sysAdmin = new SysAdmin( );
+        Washer washer = new Washer( );
 
         private string secretcode = "";
         public Form1()
@@ -43,47 +53,47 @@ namespace WindowsFormsApp1
                 (this.ClientSize.Height - panel1.Height) / 2
             );
 
-            textBox1.Location = new System.Drawing.Point(
-               (panel1.Width - textBox1.Width) / 2,
-               (panel1.Height - textBox1.Height) / 2
+            LoginLine.Location = new System.Drawing.Point(
+               (panel1.Width - LoginLine.Width) / 2,
+               (panel1.Height - LoginLine.Height) / 2
             );
-            textBox2.Location = new System.Drawing.Point(
-              (panel1.Width - textBox2.Width) / 2,
-              (panel1.Height - textBox2.Height) / 2 + 30
+            PassLine.Location = new System.Drawing.Point(
+              (panel1.Width - PassLine.Width) / 2,
+              (panel1.Height - PassLine.Height) / 2 + 30
             );
-            button1.Location = new System.Drawing.Point(
-              (panel1.Width - button1.Width) / 2,
-              (panel1.Height - button1.Height) / 2 + 80
+            Enter.Location = new System.Drawing.Point(
+              (panel1.Width - Enter.Width) / 2,
+              (panel1.Height - Enter.Height) / 2 + 80
             );
 
             Panel panel2 = new Panel
             {
-                Location = new Point((panel1.Width - textBox1.Width) / 2 - 1,
-                (panel1.Height - textBox1.Height) / 2 - 1),
+                Location = new Point((panel1.Width - LoginLine.Width) / 2 - 1,
+                (panel1.Height - LoginLine.Height) / 2 - 1),
                 Name = "panel 2",
                 Size = new Size(
-                    (textBox1.Width + 2),
-                    (textBox1.Height + 2)
+                    (LoginLine.Width + 2),
+                    (LoginLine.Height + 2)
                 ),
                 BackColor = Color.White
             };
 
             Panel panel3 = new Panel
             {
-                Location = new Point((panel1.Width - textBox2.Width) / 2 - 1,
-            (panel1.Height - textBox2.Height) / 2 - 1 + 30),
+                Location = new Point((panel1.Width - PassLine.Width) / 2 - 1,
+            (panel1.Height - PassLine.Height) / 2 - 1 + 30),
                 Name = "panel3",
                 Size = new Size(
-            (textBox2.Width + 2),
-            (textBox2.Height + 2)
+            (PassLine.Width + 2),
+            (PassLine.Height + 2)
         ),
                 BackColor = Color.White
             };
 
             Label labelss = new Label
             {
-                Location = new Point((panel1.Width - textBox2.Width) / 2,
-                    (panel1.Height - button1.Height) / 2 + 65),
+                Location = new Point((panel1.Width - PassLine.Width) / 2,
+                    (panel1.Height - Enter.Height) / 2 + 65),
                 Name = "labelss",
                 Size = new Size(
                     (panel3.Width),
@@ -189,57 +199,99 @@ namespace WindowsFormsApp1
 
         private void Entrance(object sender, EventArgs e)
         {
-            string error = Checks.Checks.IsValidPassword(textBox2.Text); 
-            
+            //Код для сиса
+            /* string error = Checks.Checks.IsValidPassword(textBox2.Text); 
 
-            if (!string.IsNullOrEmpty(error)) 
+
+             if (!string.IsNullOrEmpty(error)) 
+             {
+                 foreach (Control control in panel1.Controls)
+                 {
+                     if (control is Panel panel && panel.Name == "panel3") 
+                     {
+                         panel.BackColor = Color.Red; 
+                         break;
+                     }
+                 }
+
+                 foreach (Control control in panel1.Controls)
+                 {
+                     if (control is Label label && label.Name == "labelss") 
+                     {
+                         label.Text = error;
+                         button1.Top += (label.Height + 10);
+                         label.ForeColor = Color.Red; 
+                         break;
+                     }
+                 }
+             }
+             else
+             {
+                 foreach (Control control in panel1.Controls)
+                 {
+                     if (control is Panel panel && panel.Name == "panel3") 
+                     {
+                         panel.BackColor = Color.White; 
+                         break;
+                     }
+                 }
+
+                 foreach (Control control in panel1.Controls)
+                 {
+                     if (control is Label label && label.Name == "labelss") 
+                     {
+                         label.Text = ""; 
+                         break;
+                     }
+                 }
+             }*/
+
+            if (LoginLine.Text != "Введите Логин" && PassLine.Text != "Введите Пароль")
             {
-                foreach (Control control in panel1.Controls)
+                switch (enter.Enter(LoginLine.Text, PassLine.Text))
                 {
-                    if (control is Panel panel && panel.Name == "panel3") 
+                    case "1":
                     {
-                        panel.BackColor = Color.Red; 
+                        admin.Show( );
+                        break;
+                    }
+                    case "2":
+                    {
+                        caretaker.Show( );
+                        break;
+                    }
+                    case "3":
+                    {
+                        storekeeper.Show( );
+                        break;
+                    }
+                    case "4":
+                    {
+                        sysAdmin.Show( );
+                        break;
+                    }
+                    case "5":
+                    {
+                        washer.Show( );
+                        break;
+                    }
+                    case "6":
+                    {
+                        builder.Show( );
+                        break;
+                    }
+                    default:
+                    {
+                        MessageBox.Show("Пользователь не найден, проверьте данные");
                         break;
                     }
                 }
 
-                foreach (Control control in panel1.Controls)
-                {
-                    if (control is Label label && label.Name == "labelss") 
-                    {
-                        label.Text = error;
-                        button1.Top += (label.Height + 10);
-                        label.ForeColor = Color.Red; 
-                        break;
-                    }
-                }
             }
             else
             {
-                foreach (Control control in panel1.Controls)
-                {
-                    if (control is Panel panel && panel.Name == "panel3") 
-                    {
-                        panel.BackColor = Color.White; 
-                        break;
-                    }
-                }
-
-                foreach (Control control in panel1.Controls)
-                {
-                    if (control is Label label && label.Name == "labelss") 
-                    {
-                        label.Text = ""; 
-                        break;
-                    }
-                }
+                MessageBox.Show("Имеются пустые поля");
             }
-
-            Admin adminForm = new Admin();
-            adminForm.Show();
-            /*this.Hide();*/
-
-
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -250,6 +302,12 @@ namespace WindowsFormsApp1
         private void button2_Click (object sender, EventArgs e)
         {
             Caretaker ct = new Caretaker( );
+            ct.Show( );
+        }
+
+        private void button1_Click (object sender, EventArgs e)
+        {
+            Admin ct = new Admin( );
             ct.Show( );
         }
     }
