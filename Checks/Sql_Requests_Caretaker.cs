@@ -10,74 +10,57 @@ using System.Windows.Forms;
 
 namespace Checks
 {
-    internal class Sql_Requests_Caretaker
+    public class Sql_Requests_Caretaker
     {
-        private MySqlConnection connection;
-
-        // Строка подключения
+        public MySqlConnection connection;
         private string connectionString = "server=127.0.0.1;user=root;password=;database=Hostel";
 
+        public Sql_Requests_Caretaker ()
+        {
+            connection = new MySqlConnection(connectionString);
+        }
 
-        public delegate void ConditionSelectedEventHandler(object sender, ConditionSelectedEventArgs e);
+        public delegate void ConditionSelectedEventHandler (object sender, ConditionSelectedEventArgs e);
 
-        // Событие выбора значения в ComboBox
         public event ConditionSelectedEventHandler ConditionSelected;
 
-        public class ConditionSelectedEventArgs : EventArgs
+        public class ConditionSelectedEventArgs :EventArgs
         {
             public int SelectedCondition { get; }
 
-            public ConditionSelectedEventArgs(int selectedCondition)
+            public ConditionSelectedEventArgs (int selectedCondition)
             {
                 SelectedCondition = selectedCondition;
             }
         }
 
-        private string GetConditionText(string conditionIndex)
-        {
-            if (string.IsNullOrEmpty(conditionIndex)) return "Не указано";
-
-            switch (conditionIndex)
-            {
-                case "1":
-                    return "Убрать";
-                case "2":
-                    return "Ремонт";
-                case "3":
-                    return "Готово";
-                case "4":
-                    return "Ремонт+Уборка";
-                default:
-                    return "Неизвестно";
-            }
-        }
 
         // Метод для создания панелей с карточками комнат для завхоза
-        public List<Panel> GetRoomPanelsForCaretaker(int panelWidth, int panelHeight)
+        public List<Panel> GetRoomPanelsForCaretaker (int panelWidth, int panelHeight)
         {
-            List<Panel> roomPanels = new List<Panel>();
+            List<Panel> roomPanels = new List<Panel>( );
 
             try
             {
                 if (connection.State != ConnectionState.Open)
                 {
-                    connection.Open();
+                    connection.Open( );
                 }
 
                 string query = "SELECT RoomNum, Beds, Extras, Image, Conditions, Status FROM Rooms WHERE Conditions IN (1, 2, 4);";
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    using (MySqlDataReader reader = command.ExecuteReader( ))
                     {
-                        while (reader.Read())
+                        while (reader.Read( ))
                         {
-                            string roomNum = reader["RoomNum"].ToString();
-                            int beds = Convert.ToInt32(reader["Beds"]);
-                            string extras = reader["Extras"].ToString();
-                            string imagePath = reader["Image"].ToString();
-                            string conditions = reader["Conditions"]?.ToString() ?? "3";
+                            string roomNum = reader [ "RoomNum" ].ToString( );
+                            int beds = Convert.ToInt32(reader [ "Beds" ]);
+                            string extras = reader [ "Extras" ].ToString( );
+                            string imagePath = reader [ "Image" ].ToString( );
+                            string conditions = reader [ "Conditions" ]?.ToString( ) ?? "3";
                             string cond = GetConditionText(conditions);
-                            bool isOccupied = reader["Status"] != null && Convert.ToBoolean(reader["Status"]);
+                            bool isOccupied = reader [ "Status" ] != null && Convert.ToBoolean(reader [ "Status" ]);
                             Panel cardPanel = CreateRoomCardPanelForCaretaker(roomNum, beds, extras, imagePath, panelWidth, panelHeight, cond, isOccupied);
                             roomPanels.Add(cardPanel);
                         }
@@ -86,24 +69,24 @@ namespace Checks
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ошибка при создании панелей: " + ex.Message);
+                MessageBox.Show("Ошибка при создании панелей: " + ex.Message);
             }
             finally
             {
                 if (connection.State == ConnectionState.Open)
                 {
-                    connection.Close();
+                    connection.Close( );
                 }
             }
 
             return roomPanels;
         }
 
-        private Panel CreateRoomCardPanelForCaretaker(string roomNum, int beds, string extras, string imagePath, int panelWidth, int panelHeight, string cond, bool isOccupied)
+        private Panel CreateRoomCardPanelForCaretaker (string roomNum, int beds, string extras, string imagePath, int panelWidth, int panelHeight, string cond, bool isOccupied)
         {
             Panel cardPanel = new Panel
             {
-                Size = new Size(panelWidth - 20, (int)(panelHeight * 0.2)),
+                Size = new Size(panelWidth - 20, (int) (panelHeight * 0.2)),
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.White
             };
@@ -111,8 +94,8 @@ namespace Checks
             // Добавляем PictureBox для изображения
             PictureBox roomImage = new PictureBox
             {
-                Size = new Size((int)(cardPanel.Width * 0.2), (int)(cardPanel.Height * 0.8)),
-                Location = new Point(10, (cardPanel.Height - (int)(cardPanel.Height * 0.8)) / 2),
+                Size = new Size((int) (cardPanel.Width * 0.2), (int) (cardPanel.Height * 0.8)),
+                Location = new Point(10, (cardPanel.Height - (int) (cardPanel.Height * 0.8)) / 2),
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
             if (!string.IsNullOrEmpty(imagePath) && System.IO.File.Exists(imagePath))
@@ -207,18 +190,28 @@ namespace Checks
         }
 
         //Выбор по роли
-        public DataTable GetWorkersByRole(int roleIndex)
+        public DataTable GetWorkersByRole (int roleIndex)
         {
-            string query = "SELECT FIO FROM Workers WHERE Role = @Role";
+            string query = @"
+            SELECT 
+                W.FIO, 
+                CASE WL.Role
+                    WHEN 5 THEN 'Уборщик'
+                    WHEN 6 THEN 'Строитель'
+                    ELSE 'Неизвестная роль'
+                END AS Role
+            FROM Workers AS W
+            JOIN Workers_logs AS WL ON W.IDWorker = WL.WorkerID
+            WHERE WL.Role = @Role AND W.Busy!=TRUE";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Role", roleIndex + 1); // Индексы начинаются с 0, а роли с 1
-                    connection.Open();
+                    command.Parameters.AddWithValue("@Role", roleIndex); // Индексы начинаются с 0, а роли с 1
+                    connection.Open( );
                     using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
                     {
-                        DataTable dataTable = new DataTable();
+                        DataTable dataTable = new DataTable( );
                         adapter.Fill(dataTable);
                         return dataTable;
                     }
@@ -226,7 +219,47 @@ namespace Checks
             }
         }
 
+        public void UpdateWorkerStatus (string fio)
+        {
+            string query = "UPDATE Workers SET Busy = 1 WHERE FIO = @FIO";
 
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FIO", fio);
+                    connection.Open( );
+                    int rowsAffected = command.ExecuteNonQuery( );
 
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Статус занятости успешно обновлен.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось обновить статус занятости. Работник не найден.");
+                    }
+                }
+            }
+        }
+
+        private string GetConditionText (string conditionIndex)
+        {
+            if (string.IsNullOrEmpty(conditionIndex)) return "Не указано";
+
+            switch (conditionIndex)
+            {
+                case "1":
+                    return "Убрать";
+                case "2":
+                    return "Ремонт";
+                case "3":
+                    return "Готово";
+                case "4":
+                    return "Ремонт+Уборка";
+                default:
+                    return "Неизвестно";
+            }
+        }
     }
 }

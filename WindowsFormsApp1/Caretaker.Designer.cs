@@ -28,14 +28,45 @@
         /// </summary>
         private void InitializeComponent ()
         {
+            this.CardsPanel = new System.Windows.Forms.Panel();
+            this.panelBuilders = new System.Windows.Forms.Panel();
+            this.panelWashers = new System.Windows.Forms.Panel();
             this.SuspendLayout();
+            // 
+            // CardsPanel
+            // 
+            this.CardsPanel.Location = new System.Drawing.Point(12, 0);
+            this.CardsPanel.Name = "CardsPanel";
+            this.CardsPanel.Size = new System.Drawing.Size(364, 623);
+            this.CardsPanel.TabIndex = 0;
+            // 
+            // panelBuilders
+            // 
+            this.panelBuilders.AutoScroll = true;
+            this.panelBuilders.Location = new System.Drawing.Point(414, 339);
+            this.panelBuilders.Name = "panelBuilders";
+            this.panelBuilders.Size = new System.Drawing.Size(771, 284);
+            this.panelBuilders.TabIndex = 1;
+            // 
+            // panelWashers
+            // 
+            this.panelWashers.AutoScroll = true;
+            this.panelWashers.Location = new System.Drawing.Point(414, 12);
+            this.panelWashers.Name = "panelWashers";
+            this.panelWashers.Size = new System.Drawing.Size(771, 286);
+            this.panelWashers.TabIndex = 2;
             // 
             // Caretaker
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(253)))), ((int)(((byte)(255)))));
-            this.ClientSize = new System.Drawing.Size(1608, 782);
+            this.ClientSize = new System.Drawing.Size(1206, 635);
+            this.Controls.Add(this.panelBuilders);
+            this.Controls.Add(this.panelWashers);
+            this.Controls.Add(this.CardsPanel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Caretaker";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Caretaker_Load);
@@ -44,5 +75,9 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Panel CardsPanel;
+        private System.Windows.Forms.Panel panelBuilders;
+        private System.Windows.Forms.Panel panelWashers;
     }
 }
