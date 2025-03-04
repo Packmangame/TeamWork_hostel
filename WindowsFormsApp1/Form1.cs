@@ -29,7 +29,7 @@ namespace WindowsFormsApp1
 
         private void InitializeDatabaseConnection()
         {
-            string connectionString = "server=127.0.0.1;user=root;password=1234;database=Hostel";
+            string connectionString = "server=0.0.0.0;user=root;password=;database=Hostel";
             connection = new MySqlConnection(connectionString);
         }
 
