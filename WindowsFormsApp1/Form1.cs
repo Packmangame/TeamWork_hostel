@@ -36,7 +36,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
            
             panel1.Location = new System.Drawing.Point(
                 (this.ClientSize.Width - panel1.Width) / 2,
@@ -190,6 +190,7 @@ namespace WindowsFormsApp1
         private void Entrance(object sender, EventArgs e)
         {
             string error = Checks.Checks.IsValidPassword(textBox2.Text); 
+            
 
             if (!string.IsNullOrEmpty(error)) 
             {
@@ -206,7 +207,8 @@ namespace WindowsFormsApp1
                 {
                     if (control is Label label && label.Name == "labelss") 
                     {
-                        label.Text = error; 
+                        label.Text = error;
+                        button1.Top += (label.Height + 10);
                         label.ForeColor = Color.Red; 
                         break;
                     }
@@ -240,7 +242,10 @@ namespace WindowsFormsApp1
 
         }
 
-        
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 
 }
