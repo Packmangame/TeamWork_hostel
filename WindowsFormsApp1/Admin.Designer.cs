@@ -474,12 +474,13 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(8, 203);
+            this.button6.Location = new System.Drawing.Point(8, 188);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(175, 17);
+            this.button6.Size = new System.Drawing.Size(175, 32);
             this.button6.TabIndex = 7;
-            this.button6.Text = "button6";
+            this.button6.Text = "Предоставить";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.Filter_click);
             // 
             // checkedListBox2
             // 

@@ -19,6 +19,13 @@ namespace WindowsFormsApp1
         private const int animationStep = 10;
         private bool isPanel3Hovered = false;
         Sql_Request sqlRequest = new Sql_Request();
+        private Dictionary<string, int> conditionMapping = new Dictionary<string, int>
+        {
+            { "Убрать", 1 },
+            { "Ремонт", 2 },
+            { "Готово", 3 },
+            { "Ремонт+Уборка", 4 }
+        };
 
         public Admin()
         {
@@ -36,7 +43,7 @@ namespace WindowsFormsApp1
             panel1.Location = new System.Drawing.Point(-panel1.Width, panel2.Height);
             targetX = 0; 
         }
-
+        
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (panel1.Location.X < targetX)
@@ -54,10 +61,18 @@ namespace WindowsFormsApp1
             else
             {
                 timer.Stop();
+                if (targetX == -panel1.Width)
+                {
+                    filter_panel.Visible = true;
+                }
+                else
+                {
+                    filter_panel.Visible = false;
+                }
             }
         }
 
-        
+        //Постановка элементов формы
         private void Admin_Load(object sender, EventArgs e)
         {
             //header
@@ -92,6 +107,23 @@ namespace WindowsFormsApp1
             //Filter panel
             filter_panel.Size = panel1.Size;
             filter_panel.Location = new System.Drawing.Point(0,panel2.Height);
+            //Filter_rooms
+            foreach(Control control in filter_rooms.Controls)
+            {
+                control.Width=(int)(panel1.Width*0.8);
+                control.Height = 20;
+                control.Top += 10;
+                if (control is Button)
+                {
+                    control.Top += 40;
+                    control.Height = 25;
+                }
+                if(control is CheckedListBox)
+                {
+                    control.Height = 50;
+                    
+                }
+            }
 
 
 
@@ -109,21 +141,15 @@ namespace WindowsFormsApp1
                 targetX = 0;
                 panel3.BackColor = Color.FromArgb(173, 183, 185);
                 this.BackColor= Color.FromArgb(173, 183, 185);
-                /*filter_panel.Visible = false;*/
             }
             else
             {
                 targetX = -panel1.Width;
                 panel3.BackColor = Color.FromArgb(243, 253, 255);
                 this.BackColor = Color.FromArgb(243, 253, 255);
-                /*filter_panel.Visible = true;*/
             }
-
             timer.Start();
-            if(!filter_panel.Visible) filter_panel.Visible = false;
-            else filter_panel.Visible = true;
-
-
+            
         }
 
         private void AddMouseEventsToChildren(Control parent)
@@ -142,7 +168,7 @@ namespace WindowsFormsApp1
 
         private void Panel3_MouseEnter(object sender, EventArgs e)
         {
-            isPanel3Hovered = true; 
+            isPanel3Hovered = true;
         }
 
         private void Panel3_MouseLeave(object sender, EventArgs e)
@@ -165,14 +191,14 @@ namespace WindowsFormsApp1
             targetX = -panel1.Width;
             panel3.BackColor = Color.FromArgb(243, 253, 255);
             this.BackColor = Color.FromArgb(243, 253, 255);
-            timer.Start(); 
+            timer.Start();
         }
 
         //Выбор функции
         private void Select_Mode(object sender, EventArgs e)
         {
             Button bt = sender as Button;
-            foreach(Control control in panel3.Controls)
+            foreach (Control control in panel3.Controls)
             {
                 if(control is Panel panel && panel.Tag.ToString() != bt.Tag.ToString())
                 {
@@ -192,6 +218,7 @@ namespace WindowsFormsApp1
                         }
                         else control1.Visible = false;
                     }
+                    HidePanel3();
                     switch (panel1.Tag.ToString())
                     {
                         case "list_of_rooms":
@@ -210,7 +237,7 @@ namespace WindowsFormsApp1
         private void LoadRoomPanels()
         {
             
-            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width , panel5.Height /*- ((60 * panel5.Height) / 100)*/);
+            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width , panel5.Height);
 
             if (roomPanels != null && roomPanels.Any())
             {
@@ -267,6 +294,74 @@ namespace WindowsFormsApp1
             {
                 MessageBox.Show("Выберите строку в таблице.");
             }
+        }
+        
+        //Фильтрация 
+        private void Filter_click(object sender, EventArgs e)
+        {
+            var (bedsMin, bedsMax) = GetBedsFilter();
+            List<int> conditions = GetConditionIdsFilter();
+            List<bool?> statuses = GetStatusesFilter();
+
+            panel5.Controls.Clear();
+
+            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width, panel5.Height, bedsMin, bedsMax, conditions, statuses);
+
+            if (roomPanels.Any())
+            {
+                int verticalSpacing = 10;
+                int currentY = 10;
+
+                foreach (var panel in roomPanels)
+                {
+                    panel.Location = new Point(10, currentY);
+                    panel5.Controls.Add(panel);
+                    currentY += panel.Height + verticalSpacing;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Нет комнат, соответствующих выбранным фильтрам.");
+            }
+        }
+
+        private (int? bedsMin, int? bedsMax) GetBedsFilter()
+        {
+            int minBeds = trackBar1.Minimum;
+            int maxBeds = trackBar1.Value;
+
+            return (minBeds == trackBar1.Minimum ? (int?)null : minBeds,
+                    maxBeds == trackBar1.Maximum ? (int?)null : maxBeds);
+        }
+
+        private List<int> GetConditionIdsFilter()
+        {
+            List<int> selectedConditionIds = new List<int>();
+            foreach (var item in checkedListBox2.CheckedItems)
+            {
+                if (conditionMapping.TryGetValue(item.ToString(), out int conditionId))
+                {
+                    selectedConditionIds.Add(conditionId);
+                }
+            }
+            return selectedConditionIds;
+        }
+
+        private List<bool?> GetStatusesFilter()
+        {
+            List<bool?> selectedStatuses = new List<bool?>();
+            foreach (var item in checkedListBox1.CheckedItems)
+            {
+                if (bool.TryParse(item.ToString(), out bool status))
+                {
+                    selectedStatuses.Add(status);
+                }
+                else if (item.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
+                {
+                    selectedStatuses.Add(null);
+                }
+            }
+            return selectedStatuses;
         }
     }
 }

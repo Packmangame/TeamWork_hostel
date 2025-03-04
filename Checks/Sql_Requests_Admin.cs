@@ -163,9 +163,28 @@ namespace Checks
 
 
         // Метод для создания панелей с карточками комнат
-        public List<Panel> GetRoomPanels(int panelWidth, int panelHeight)
+        public List<Panel> GetRoomPanels(int panelWidth, int panelHeight, int? bedsMin = null, int? bedsMax = null, List<int> conditionIds = null, List<bool?> statuses = null)
         {
             List<Panel> roomPanels = new List<Panel>();
+            string query = "SELECT RoomNum, Beds, Extras, Image, Conditions, Status FROM Rooms WHERE 1=1";
+
+            // Добавляем условия для фильтрации
+            if (bedsMin.HasValue || bedsMax.HasValue)
+            {
+                query += $" AND Beds BETWEEN {bedsMin ?? 0} AND {bedsMax ?? int.MaxValue}";
+            }
+
+            if (conditionIds != null && conditionIds.Count > 0)
+            {
+                query += $" AND Conditions IN ({string.Join(",", conditionIds)})";
+            }
+
+            if (statuses != null && statuses.Count > 0)
+            {
+                // Преобразуем bool в int (0 или 1)
+                List<int> statusValues = statuses.Select(status => status == true ? 1 : 0).ToList();
+                query += $" AND Status IN ({string.Join(",", statusValues)})";
+            }
 
             try
             {
@@ -174,7 +193,6 @@ namespace Checks
                     connection.Open();
                 }
 
-                string query = "SELECT RoomNum, Beds, Extras, Image, Conditions, Status FROM Rooms"; 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
@@ -185,9 +203,10 @@ namespace Checks
                             int beds = Convert.ToInt32(reader["Beds"]);
                             string extras = reader["Extras"].ToString();
                             string imagePath = reader["Image"].ToString();
-                            string conditions = reader["Conditions"]?.ToString() ?? "3"; 
-                            string cond = GetConditionText(conditions);
+                            string conditionsValue = reader["Conditions"]?.ToString() ?? "3";
+                            string cond = GetConditionText(conditionsValue);
                             bool isOccupied = reader["Status"] != null && Convert.ToBoolean(reader["Status"]);
+
                             Panel cardPanel = CreateRoomCardPanel(roomNum, beds, extras, imagePath, panelWidth, panelHeight, cond, isOccupied);
                             roomPanels.Add(cardPanel);
                         }
@@ -298,17 +317,31 @@ namespace Checks
 
             CheckBox statusCheckBox = new CheckBox
             {
-                Text = "Заселено",
+                
                 Checked = isOccupied,
                 Location = new Point(roomImage.Right + 10, condLabel.Bottom + 5),
                 AutoSize = true
             };
-            statusCheckBox.CheckedChanged += (sender, e) => UpdateRoomStatus(roomNum, statusCheckBox.Checked); 
+           
+            UpdateCheckBoxText(statusCheckBox, isOccupied);
+            statusCheckBox.CheckedChanged += (sender, e) =>
+            {
+                bool isChecked = statusCheckBox.Checked;
+                UpdateRoomStatus(roomNum, isChecked); 
+                UpdateCheckBoxText(statusCheckBox, isChecked); 
+            };
             cardPanel.Controls.Add(statusCheckBox);
 
 
             return cardPanel;
         }
+
+        //Смена текста
+        private void UpdateCheckBoxText(CheckBox checkBox, bool isOccupied)
+        {
+            checkBox.Text = isOccupied ? "Заселено" : "Не живут";
+        }
+
 
         //Обновление проживания в комнате
         private void UpdateRoomStatus(string roomNum, bool isOccupied)
