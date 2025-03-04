@@ -91,7 +91,9 @@ namespace WindowsFormsApp1
 
             //Filter panel
             filter_panel.Size = panel1.Size;
-            
+            filter_panel.Location = new System.Drawing.Point(0,panel2.Height);
+
+
 
             panel1.MouseEnter += Panel3_MouseEnter;
             panel1.MouseLeave += Panel3_MouseLeave;
@@ -107,15 +109,21 @@ namespace WindowsFormsApp1
                 targetX = 0;
                 panel3.BackColor = Color.FromArgb(173, 183, 185);
                 this.BackColor= Color.FromArgb(173, 183, 185);
+                /*filter_panel.Visible = false;*/
             }
             else
             {
                 targetX = -panel1.Width;
                 panel3.BackColor = Color.FromArgb(243, 253, 255);
                 this.BackColor = Color.FromArgb(243, 253, 255);
+                /*filter_panel.Visible = true;*/
             }
 
             timer.Start();
+            if(!filter_panel.Visible) filter_panel.Visible = false;
+            else filter_panel.Visible = true;
+
+
         }
 
         private void AddMouseEventsToChildren(Control parent)
@@ -175,6 +183,15 @@ namespace WindowsFormsApp1
                     panel1.Visible = true;
                     panel1.Dock = DockStyle.Fill;
                     panel1.Size=panel3.Size;
+                    foreach (Control control1 in filter_panel.Controls)
+                    {
+                        if (control1 is Panel p1 && p1.Tag.ToString() == bt.Tag.ToString())
+                        {
+                            p1.Visible = true;
+                            p1.Dock = DockStyle.Fill;
+                        }
+                        else control1.Visible = false;
+                    }
                     switch (panel1.Tag.ToString())
                     {
                         case "list_of_rooms":
@@ -184,6 +201,7 @@ namespace WindowsFormsApp1
                             LoadListOfPeoples();
                             break;
                     }
+                    break;
                 }
             }
         }
