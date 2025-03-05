@@ -310,6 +310,12 @@ namespace WindowsFormsApp1
             Admin ct = new Admin( );
             ct.Show( );
         }
+
+        private void button3_Click (object sender, EventArgs e)
+        {
+            SysAdmin s = new SysAdmin( );
+            s.Show( );
+        }
     }
 
 }
