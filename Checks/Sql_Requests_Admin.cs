@@ -10,6 +10,7 @@ using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using Mysqlx.Crud;
 
 namespace Checks
 {
@@ -120,7 +121,7 @@ namespace Checks
             }
             catch (Exception ex)
             {
-                return null; // Возвращаем null при ошибке
+                return null; 
             }
             finally
             {
@@ -455,7 +456,6 @@ namespace Checks
             checkBox.Text = isOccupied ? "Заселено" : "Не живут";
         }
 
-
         //Обновление проживания в комнате
         public void UpdateRoomStatus(string roomNum, bool isOccupied)
         {
@@ -506,7 +506,7 @@ namespace Checks
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected == 0)
                     {
-                        MessageBox.Show($"Пользователь с ID {idUser} не найден.");
+                        /*MessageBox.Show($"Пользователь с ID {idUser} не найден.");*/
                         return;
                     }
                 }
@@ -541,7 +541,7 @@ namespace Checks
                         int roomsUpdated = updateCommand.ExecuteNonQuery();
                         if (roomsUpdated > 0)
                         {
-                            MessageBox.Show($"Статус комнаты с IDR={roomId} успешно обновлен.");
+                            /*MessageBox.Show($"Статус комнаты с IDR={roomId} успешно обновлен.");*/
                         }
                         else
                         {
@@ -583,7 +583,7 @@ namespace Checks
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
-                        MessageBox.Show($"Запись с IDU={idUser} успешно обновлена.");
+                       /* MessageBox.Show($"Запись с IDU={idUser} успешно обновлена.");*/
                     }
                     else
                     {
@@ -593,10 +593,156 @@ namespace Checks
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при обновлении записи в Users: {ex.Message}");
+                MessageBox.Show($"Ошибка при обновлении записи в Reservation: {ex.Message}");
             }
             finally
             {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        //Добавить резервацию
+        public void AddReservation(int idUser,int IdRoom,DateTime dateEntr,DateTime Depdate,int CountPeople)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                string query = "INSERT INTO `Reservation`( `IDUser`, `DateOfEntry`, `DepartureDate`, `RoomNumber`, `PeopleCount`) VALUES (@IDUser, @DateOfEntry, @DepartureDate, @RoomNumber, @PeopleCount)";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@IDUser", idUser);
+                    command.Parameters.AddWithValue("@DateOfEntry", dateEntr);
+                    command.Parameters.AddWithValue("@DepartureDate", Depdate);
+                    command.Parameters.AddWithValue("@RoomNumber", IdRoom);
+                    command.Parameters.AddWithValue("@PeopleCount", CountPeople);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Бронирование успешно добавлено!");
+                        DateTime today = DateTime.Today;
+                        UpdateUserReservation(idUser, true);
+                        if (today >= dateEntr.Date && today <= Depdate.Date)
+                        {
+                            // Вызываем метод UpdateLivingAndRoomStatus
+                            UpdateLivingAndRoomStatus(idUser, true);
+                        }
+                    }
+                        
+                    else
+                        MessageBox.Show("Ошибка при добавлении бронирования");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении записи в Reservation: {ex.Message}");
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+
+        public async Task<bool> CheckReservationConflictAsync(int roomNumber, DateTime newEntryDate, DateTime currentDepartureDate)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                string query = @"
+            SELECT COUNT(*) 
+            FROM Reservation 
+            WHERE RoomNumber = @RoomNumber AND (
+                (@NewEntryDate BETWEEN DateOfEntry AND DepartureDate) OR
+                (@CurrentDepartureDate BETWEEN DateOfEntry AND DepartureDate) OR
+                (DateOfEntry BETWEEN @NewEntryDate AND @CurrentDepartureDate) OR
+                (DepartureDate BETWEEN @NewEntryDate AND @CurrentDepartureDate)
+            )";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    // Добавляем параметры
+                    command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                    command.Parameters.AddWithValue("@NewEntryDate", newEntryDate.Date);
+                    command.Parameters.AddWithValue("@CurrentDepartureDate", currentDepartureDate.Date);
+
+                    // Выполняем запрос асинхронно и получаем результат
+                    int count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    return count > 0; // Если найдены конфликты, возвращаем true
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при проверке конфликта резервации: {ex.Message}");
+                return false; // В случае ошибки считаем, что конфликт не обнаружен
+            }
+            finally
+            {
+                // Закрываем соединение после выполнения запроса
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public void UpdateReservationEntryDate(int roomNumber, DateTime newEntryDate, DateTime currentDepartureDate)
+        {
+            try
+            {
+                // Проверяем состояние соединения и открываем его при необходимости
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                string query = @"
+            UPDATE Reservation 
+            SET DateOfEntry = @NewEntryDate 
+            WHERE RoomNumber = @RoomNumber AND DateOfEntry = @CurrentEntryDate";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    // Добавляем параметры
+                    command.Parameters.AddWithValue("@NewEntryDate", newEntryDate.Date);
+                    command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                    command.Parameters.AddWithValue("@CurrentEntryDate", currentDepartureDate.Date);
+
+                    // Выполняем запрос
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Дата заезда успешно обновлена!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Не удалось обновить дату заезда.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении даты заезда: {ex.Message}");
+            }
+            finally
+            {
+                // Закрываем соединение после выполнения запроса
                 if (connection.State == ConnectionState.Open)
                 {
                     connection.Close();
