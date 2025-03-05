@@ -57,6 +57,7 @@
     <Compile Include="Sql_Requests_Admin.cs" />
     <Compile Include="Sql_Requests_Caretaker.cs" />
     <Compile Include="Sql_Requests_Enter.cs" />
+    <Compile Include="Sql_Requests_SysAdmin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
