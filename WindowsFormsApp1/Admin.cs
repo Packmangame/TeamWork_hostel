@@ -27,11 +27,44 @@ namespace WindowsFormsApp1
             { "Готово", 3 },
             { "Ремонт+Уборка", 4 }
         };
+        private bool _isUpdating = false;
+        private Label labelFIO;
+        private TextBox textBoxFIO;
+
+        private Label labelPassport;
+        private TextBox textBoxPassport;
+
+        private Label labelEmail;
+        private TextBox textBoxEmail;
+
+        private Label labelPhone;
+        private TextBox textBoxPhone;
+
+        private Label labelBirthDate;
+        private DateTimePicker dateTimePickerBirth;
+
+        private Label labelPreferences;
+        private TextBox textBoxPreferences;
+
+        private Label labelChildren;
+        private CheckBox checkBoxChildren;
+
+        private Label labelReservation;
+        private CheckBox checkBoxReservation;
+
+        private Label labelLivesIn;
+        private CheckBox checkBoxLivesIn;
+
+        private Button buttonAdd;
 
         public Admin()
         {
             InitializeComponent();
             InitializeAnimation();
+            System.Windows.Forms.ToolTip toolTip1 = new System.Windows.Forms.ToolTip();
+            trackBar1.Scroll += TrackBar_Scroll1;
+            trackBar2.Scroll += TrackBar_Scroll2;
+            textBox4.SelectionStart = 3;
         }
 
         private void UpdateDataGrid()
@@ -39,8 +72,18 @@ namespace WindowsFormsApp1
             dataGridView1.DataSource = sqlRequest.ExecuteQuery("Users");
             dataGridView2.DataSource = sqlRequest.ExecuteQuery("Users");
             dataGridView3.DataSource = sqlRequest.ExecuteQuery("Rooms where Status=0");
+            dataGridView5.DataSource = sqlRequest.ExecuteQuery("Reservation");
         }
-        
+
+        private void TrackBar_Scroll1(object sender, EventArgs e)
+        {
+            label9.Text= $"Кол-во комнат: {trackBar1.Minimum}-{trackBar1.Value}";
+        }
+        private void TrackBar_Scroll2(object sender, EventArgs e)
+        {
+            label12.Text = $"Год рождения: {trackBar2.Value}-{trackBar2.Maximum}";
+        }
+
         //Методы для анимации
         private void InitializeAnimation()
         {
@@ -145,10 +188,10 @@ namespace WindowsFormsApp1
                     control.Height = 25;
                 }
             }
-            
 
 
 
+            Select_Mode("list_of_rooms");
 
 
             panel1.MouseEnter += Panel3_MouseEnter;
@@ -157,6 +200,27 @@ namespace WindowsFormsApp1
             AddMouseEventsToChildren(panel1);
 
         }
+
+
+        private void Select_Mode(string tag)
+        {
+            // Ищем кнопку с указанным тегом в panel1
+            Button targetButton = panel1.Controls.OfType<Button>()
+                .FirstOrDefault(btn => btn.Tag?.ToString() == tag);
+
+            if (targetButton != null)
+            {
+                // Имитируем нажатие кнопки
+                Select_Mode(targetButton, EventArgs.Empty);
+            }
+            else
+            {
+                MessageBox.Show($"Кнопка с тегом '{tag}' не найдена!");
+            }
+        }
+
+
+
         //Методы для открытия и сокрытия боковой панели задач
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -292,45 +356,44 @@ namespace WindowsFormsApp1
 
         }
 
-        int verticalPadding = 10; // Отступ между элементами
-        int sidePadding = 10;     // Отступ от краев панели
+        const int verticalPadding = 10; // Отступ между элементами
+        const int sidePadding = 10;     // Отступ от краев панели
         int currentY = 10; // Текущая вертикальная позиция
 
         private void Placement_Elements_Add_People()
         {
-            int verticalPadding = 10; // Отступ между элементами
-            int sidePadding = 10;     // Отступ от краев панели
-            int currentY = sidePadding; // Текущая вертикальная позиция
-
-            // Очищаем панель перед размещением элементов
+            currentY = 10;
             panel4.Controls.Clear();
 
-            // Создаем основные элементы
-            Label label1 = new Label { Text = "Имя", AutoSize = true };
-            TextBox textBox2 = new TextBox();
-            Label label2 = new Label { Text = "Фамилия", AutoSize = true };
-            TextBox textBox3 = new TextBox();
-            Label label3 = new Label { Text = "Email", AutoSize = true };
-            TextBox textBox4 = new TextBox();
-            Label label4 = new Label { Text = "Телефон", AutoSize = true };
-            TextBox textBox5 = new TextBox();
-            Label label5 = new Label { Text = "Дата рождения", AutoSize = true };
-            DateTimePicker dateEntry = new DateTimePicker();
+            // Создаем элементы для всех полей:
+            this.labelFIO = new Label { Text = "ФИО", AutoSize = true };
+            this.textBoxFIO = new TextBox();
 
-            // CheckBox для выбора количества панелей
-            CheckBox checkBoxAddPanels = new CheckBox { Text = "Добавить детей", AutoSize = true };
+            this.labelPassport = new Label { Text = "Паспорт", AutoSize = true };
+            this.textBoxPassport = new TextBox();
 
-            // NumericUpdown для указания количества панелей
-            NumericUpDown numericUpDownPanels = new NumericUpDown
-            {
-                Minimum = 1, // Минимальное значение равно 1
-                Value = 1,   // Начальное значение равно 1
-                Width = 100,
-                Visible = false
-            };
+            this.labelEmail = new Label { Text = "Email", AutoSize = true };
+            this.textBoxEmail = new TextBox();
 
-            // Кнопка button9
-            Button button9 = new Button
+            this.labelPhone = new Label { Text = "Телефон", AutoSize = true };
+            this.textBoxPhone = new TextBox();
+            this.textBoxPhone.Text = "+7";
+            this.textBoxPhone.SelectionStart = 3;
+            this.textBoxPhone.MaxLength = 16;
+            this.textBoxPhone.TextChanged += Checked_Phonenumber;
+
+            this.labelBirthDate = new Label { Text = "Дата рождения", AutoSize = true };
+            this.dateTimePickerBirth = new DateTimePicker();
+
+            this.labelPreferences = new Label { Text = "Предпочтения", AutoSize = true };
+            this.textBoxPreferences = new TextBox();
+
+            this.labelChildren = new Label { Text = "Есть дети", AutoSize = true };
+            this.checkBoxChildren = new CheckBox();
+
+            
+
+            this.buttonAdd = new Button
             {
                 Text = "Добавить пользователя",
                 Width = 150,
@@ -338,88 +401,106 @@ namespace WindowsFormsApp1
                 Visible = true
             };
 
-            // Добавляем основные элементы на panel4
-            AddControlToPanel(label1);
-            AddControlToPanel(textBox2);
-            AddControlToPanel(label2);
-            AddControlToPanel(textBox3);
-            AddControlToPanel(label3);
-            AddControlToPanel(textBox4);
-            AddControlToPanel(label4);
-            AddControlToPanel(textBox5);
-            AddControlToPanel(label5);
-            AddControlToPanel(dateEntry);
 
-            // Добавляем CheckBox
-            AddControlToPanel(checkBoxAddPanels);
+            // Добавляем элементы на панель:
+            AddControlToPanel(labelFIO);
+            AddControlToPanel(textBoxFIO);
 
-            // Добавляем NumericUpdown (скрытый по умолчанию)
-            AddControlToPanel(numericUpDownPanels);
+            AddControlToPanel(labelPassport);
+            AddControlToPanel(textBoxPassport);
 
-            // Сохраняем текущую позицию после numericUpDownPanels
-            int dynamicPanelStartY = currentY;
+            AddControlToPanel(labelEmail);
+            AddControlToPanel(textBoxEmail);
 
-            // Добавляем кнопку button9 (пока не добавляем на панель)
-            button9.Location = new Point(sidePadding, currentY); // Запоминаем позицию кнопки
-            currentY += button9.Height + verticalPadding;
+            AddControlToPanel(labelPhone);
+            AddControlToPanel(textBoxPhone);
 
-            // Инициализируем обработчики событий
-            InitializeEventHandlers(checkBoxAddPanels, numericUpDownPanels, button9);
+            AddControlToPanel(labelBirthDate);
+            AddControlToPanel(dateTimePickerBirth);
 
-            // Устанавливаем начальную высоту panel4
+            AddControlToPanel(labelPreferences);
+            AddControlToPanel(textBoxPreferences);
+
+            AddControlToPanel(labelChildren);
+            AddControlToPanel(checkBoxChildren);
+            AddControlToPanel(buttonAdd);
+
+            // Инициализация обработчиков:
+            InitializeEventHandlers(buttonAdd);
+
             UpdatePanel4Height();
         }
 
         // Метод для инициализации обработчиков событий
-        void InitializeEventHandlers(CheckBox checkBoxAddPanels, NumericUpDown numericUpDownPanels, Button button9)
+        void InitializeEventHandlers(Button buttonAdd)
         {
             // Обработчик события для CheckBox
-            checkBoxAddPanels.CheckedChanged += (s, e) =>
+            buttonAdd.Click += (s, e) =>
             {
-                numericUpDownPanels.Visible = checkBoxAddPanels.Checked;
+                AddUser();
+            };
+        }
 
-                if (checkBoxAddPanels.Checked)
-                {
-                    // Если выбрано, добавляем динамические панели
-                    AddDynamicPanels((int)numericUpDownPanels.Value);
-                }
-                else
-                {
-                    // Если не выбрано, очищаем добавленные панели
-                    ClearAddedPanels();
-                }
+        private void AddUser()
+        {
+            // Получаем данные из полей:
+            string fio = textBoxFIO.Text.Trim();
+            string passport = textBoxPassport.Text.Trim();
+            string email = textBoxEmail.Text.Trim();
+            string phone = textBoxPhone.Text.Trim();
+            DateTime birthDate = dateTimePickerBirth.Value;
+            string preferences = textBoxPreferences.Text.Trim();
+            bool children = checkBoxChildren.Checked;
+            // Проверка заполнения полей:
+            if (string.IsNullOrEmpty(fio) ||
+                string.IsNullOrEmpty(passport) ||
+                string.IsNullOrEmpty(email) ||
+                string.IsNullOrEmpty(phone))
+            {
+                MessageBox.Show("Заполните все обязательные поля!");
+                return;
+            }
 
-                // Перерасполагаем кнопку button9
-                button9.Location = new Point(
-                    sidePadding,
-                    GetButtonPositionY()
+            try
+            {
+                // Добавляем пользователя в БД:
+                int newUserId = sqlRequest.AddUser(
+                    fio,
+                    passport,
+                    phone,
+                    email,
+                    birthDate,
+                    children,
+                    preferences
                 );
 
-                // Обновляем высоту panel4
-                UpdatePanel4Height();
-            };
-
-            // Обработчик изменения значения в NumericUpdown
-            numericUpDownPanels.ValueChanged += (s, e) =>
-            {
-                if (checkBoxAddPanels.Checked)
+                // Обновляем DataGridView и выделяем новую строку:
+                UpdateDataGrid();
+                foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    // Обновляем количество динамических панелей
-                    AddDynamicPanels((int)numericUpDownPanels.Value);
+                    if (row.Cells["IDU"]?.Value != null &&
+                        Convert.ToInt32(row.Cells["IDU"].Value) == newUserId)
+                    {
+                        row.Selected = true;
+                        break;
+                    }
                 }
 
-                // Перерасполагаем кнопку button9
-                button9.Location = new Point(
-                    sidePadding,
-                    GetButtonPositionY()
-                );
-
-                // Обновляем высоту panel4
-                UpdatePanel4Height();
-            };
-
-            // Добавляем кнопку button9 на панель
-            panel4.Controls.Add(button9);
+                // Очищаем поля:
+                textBoxFIO.Clear();
+                textBoxPassport.Clear();
+                textBoxEmail.Clear();
+                textBoxPhone.Text = "+7";
+                textBoxPhone.SelectionStart = 3;
+                textBoxPreferences.Clear();
+                checkBoxChildren.Checked = false;
+                dateTimePickerBirth.Value = DateTime.Now;
+                panel4.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}");
+            }
         }
 
         // Метод для добавления контролов на panel4
@@ -430,6 +511,15 @@ namespace WindowsFormsApp1
             {
                 control.Height = 30;
             }
+            else if (control is DateTimePicker)
+            {
+                control.Height = 25;
+            }
+            else if (control is CheckBox)
+            {
+                control.Height = 20;
+            }
+
             control.Location = new Point(sidePadding, currentY);
             panel4.Controls.Add(control);
             currentY += control.Height + verticalPadding;
@@ -442,46 +532,72 @@ namespace WindowsFormsApp1
         }
 
         // Метод для обновления высоты panel4
-        void UpdatePanel4Height()
+        private void UpdatePanel4Height()
         {
-            panel4.Height = currentY + sidePadding;
+            // Очистка текущего значения currentY
+            currentY = sidePadding;
 
-            // Обновляем расположение элементов ниже panel4
-            UpdateLayout();
-        }
-
-        // Метод для очистки добавленных панелей
-        void ClearAddedPanels()
-        {
-            // Преобразуем Controls в IEnumerable<Control> с помощью Cast<Control>()
-            foreach (Control control in panel4.Controls.Cast<Control>().ToList())
+            // Расчет высоты всех элементов
+            foreach (Control control in panel4.Controls)
             {
-                if (control is Panel panel && panel.Tag != null && panel.Tag.ToString() == "dynamic")
+                if (control is Panel dynamicPanel && dynamicPanel.Tag?.ToString() == "dynamic")
                 {
-                    panel4.Controls.Remove(control);
+                    currentY += dynamicPanel.Height + verticalPadding;
+                }
+                else
+                {
+                    currentY += control.Height + verticalPadding;
                 }
             }
 
-            // Сбрасываем текущую позицию для корректного перерасчета
-            currentY = sidePadding + panel4.Controls.OfType<Control>().Sum(c => c.Height + verticalPadding) - verticalPadding;
+            // Установка финальной высоты панели
+            panel4.Height = currentY + verticalPadding;
+            panel4.Refresh();
+        }
+
+        // Метод для очистки добавленных панелей
+      /*  void ClearAddedPanels()
+        {
+            // Удаление динамических панелей
+            var dynamicPanels = panel4.Controls.OfType<Panel>()
+                .Where(p => p.Tag?.ToString() == "dynamic")
+                .ToList();
+
+            foreach (var panel in dynamicPanels)
+            {
+                panel4.Controls.Remove(panel);
+            }
+
+            // Сброс currentY до начальной позиции
+            currentY = sidePadding;
+
+            // Обновление позиции кнопки "Добавить пользователя"
+            button9.Location = new Point(
+                sidePadding,
+                currentY
+            );
+
+            // Обновление высоты и позиций
+            UpdatePanel4Height();
+            UpdateLayout();
         }
 
         // Метод для добавления динамических панелей
         void AddDynamicPanels(int count)
         {
-            ClearAddedPanels(); // Очищаем предыдущие панели
+            *//*ClearAddedPanels(); // Очистка предыдущих панелей*//*
 
             for (int i = 0; i < count; i++)
             {
                 Panel dynamicPanel = new Panel
                 {
-                    Tag = "dynamic", // Метка для идентификации
+                    Tag = "dynamic",
                     Size = new Size(panel4.Width - 2 * sidePadding, 50),
                     BackColor = Color.LightGray,
                     Location = new Point(sidePadding, currentY)
                 };
 
-                // Добавляем текстовое поле на панель
+                // Добавление текстового поля
                 TextBox childName = new TextBox
                 {
                     Location = new Point(10, 10),
@@ -492,7 +608,18 @@ namespace WindowsFormsApp1
                 panel4.Controls.Add(dynamicPanel);
                 currentY += dynamicPanel.Height + verticalPadding;
             }
-        }
+
+            // Позиционирование кнопки после всех элементов
+            button9.Location = new Point(
+                sidePadding,
+                currentY
+            );
+            currentY += button9.Height + verticalPadding;
+
+            // Обновление высоты и позиций
+            UpdatePanel4Height();
+            UpdateLayout();
+        }*/
         //Загрузка карточек с комнатами
         private void LoadRoomPanels()
         {
@@ -560,7 +687,7 @@ namespace WindowsFormsApp1
         {
             var (bedsMin, bedsMax) = GetBedsFilter();
             List<int> conditions = GetConditionIdsFilter();
-            List<bool?> statuses = GetStatusesFilter();
+            List<bool> statuses = GetStatusesFilter();
 
             panel5.Controls.Clear();
 
@@ -606,18 +733,20 @@ namespace WindowsFormsApp1
             return selectedConditionIds;
         }
         //Получение+перевод статуса комнаты
-        private List<bool?> GetStatusesFilter()
+        private List<bool> GetStatusesFilter()
         {
-            List<bool?> selectedStatuses = new List<bool?>();
+            List<bool> selectedStatuses = new List<bool>();
             foreach (var item in checkedListBox1.CheckedItems)
             {
-                if (bool.TryParse(item.ToString(), out bool status))
+                string text = item.ToString();
+
+                if (text == "Проживают")
                 {
-                    selectedStatuses.Add(status);
+                    selectedStatuses.Add(true); // Проживают = true
                 }
-                else if (item.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
+                else if (text == "Не проживают")
                 {
-                    selectedStatuses.Add(null);
+                    selectedStatuses.Add(false); // Не проживают = false
                 }
             }
             return selectedStatuses;
@@ -625,7 +754,67 @@ namespace WindowsFormsApp1
         //Фильтрация пользователей
         private void Filter_users(object sender, EventArgs e)
         {
+            dataGridView1.DataSource = null;
+            var (minYear, maxYear) = GetBirthYearFilter();
+            List<bool> children = GetChildrenFilter();
+            List<bool> reservations = GetReservationFilter();
+            List<bool> livesIn = GetLivesInFilter();
+            DataTable usersTable = sqlRequest.GetUsersForGrid(minYear, maxYear, children, reservations, livesIn);           
+            if (usersTable.Rows.Count > 0)
+            {
+                dataGridView1.DataSource = usersTable;
+            }
+            else
+            {
+                MessageBox.Show("Нет данных, соответствующих фильтрам.");
+            }
+        }
 
+        private (int minYear, int maxYear) GetBirthYearFilter()
+        {
+            int minYear = trackBar2.Value; 
+            int maxYear = trackBar2.Maximum; 
+            return (minYear, maxYear);
+        }
+
+        private List<bool> GetReservationFilter()
+        {
+            List<bool> reservations = new List<bool>();
+            if (checkBox3.Checked)
+            {
+                reservations.Add(true);
+            }
+            else if (checkBox3.Checked)
+            {
+                reservations.Add(false);
+            }
+            return reservations;
+        }
+        private List<bool> GetChildrenFilter()
+        {
+            List<bool> children = new List<bool>();
+            if (checkBox2.Checked)
+            {
+                children.Add(true); 
+            }
+            else if (checkBox2.Checked)
+            {
+                children.Add(false); 
+            }
+            return children;
+        }
+        private List<bool> GetLivesInFilter()
+        {
+            List<bool> livesIn = new List<bool>();
+            if (checkBox4.Checked)
+            {
+                livesIn.Add(true);
+            }
+            else if (checkBox4.Checked)
+            {
+                livesIn.Add(false);
+            }
+            return livesIn;
         }
 
         //Поиск места проживания
@@ -844,23 +1033,27 @@ namespace WindowsFormsApp1
             label17.Location = new Point((panel7.Width - label17.Width) / 2, dep_date.Bottom + 10);
             dataGridView3.Location = new Point((panel7.Width - dataGridView3.Width) / 2, label17.Bottom + 10);
 
-            label19.Location = new Point((panel7.Width - label19.Width) / 2, dataGridView3.Bottom + 10);
-            numericUpDown2.Location = new Point((panel7.Width - numericUpDown2.Width) / 2, label19.Bottom + 10);
-            button8.Location = new Point((panel7.Width - button8.Width) / 2, numericUpDown2.Bottom + 10);
-
+            label19.Location = new Point((panel7.Width - label19.Width) / 4, dataGridView3.Bottom + 10);
+            numericUpDown2.Location = new Point((label19.Right + 5), dataGridView3.Bottom + 10);
+            button8.Location = new Point(label19.Left+ ((panel7.Width - numericUpDown2.Width) / 4)*2, dataGridView3.Bottom + 10);
+            label8.Location = new Point(1, button8.Bottom + 10);
+            panel7.Height = panel7.Height + 40;
 
         }
 
         private void изменитьДатуЗаездаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dataGridView5.SelectedRows.Count == 0 || dataGridView5.SelectedRows[0].Cells["DateOfEntry"] == null)
+            if (dataGridView5.SelectedRows.Count == 0 ||
+       dataGridView5.SelectedRows[0].Cells["DateOfEntry"] == null)
             {
                 MessageBox.Show("Выберите строку с датой для изменения!");
                 return;
             }
+
             int roomNumber = Convert.ToInt32(dataGridView5.SelectedRows[0].Cells["RoomNumber"].Value);
             DateTime currentEntryDate = Convert.ToDateTime(dataGridView5.SelectedRows[0].Cells["DateOfEntry"].Value);
             DateTime currentDepartureDate = Convert.ToDateTime(dataGridView5.SelectedRows[0].Cells["DepartureDate"].Value);
+
             Form dateForm = new Form
             {
                 Width = 250,
@@ -873,8 +1066,9 @@ namespace WindowsFormsApp1
             {
                 Location = new Point(50, 30),
                 Width = 150,
-                Value = currentEntryDate 
+                Value = currentEntryDate
             };
+
             Button okButton = new Button
             {
                 Text = "OK",
@@ -882,29 +1076,184 @@ namespace WindowsFormsApp1
                 Width = 80,
                 Height = 30
             };
+
             okButton.Click += async (s, args) =>
             {
                 DateTime newDate = datePicker.Value;
+
                 if (newDate >= currentDepartureDate)
                 {
                     MessageBox.Show("Дата заезда не может быть позже или равна дате выезда!");
                     return;
                 }
-                bool isConflict = await sqlRequest.CheckReservationConflictAsync(roomNumber, newDate, currentDepartureDate);
+
+                // Передаем старые даты для исключения текущей записи
+                bool isConflict = await sqlRequest.CheckReservationConflictAsync(
+                    roomNumber,
+                    newDate,
+                    currentDepartureDate,
+                    currentEntryDate,
+                    currentDepartureDate);
 
                 if (isConflict)
                 {
                     MessageBox.Show("На выбранную дату уже существует резервация для этого номера!");
                     return;
                 }
-                MessageBox.Show($"Новое значение даты: {newDate.ToShortDateString()}");
-                sqlRequest.UpdateReservationEntryDate(roomNumber, newDate, currentEntryDate);
+
+                // Обновляем запись с проверкой старых дат
+                sqlRequest.UpdateReservationEntryDate(
+                    roomNumber,
+                    newDate,
+                    currentDepartureDate,
+                    currentEntryDate,
+                    currentDepartureDate);
+
                 UpdateDataGrid();
                 dateForm.Close();
             };
+
             dateForm.Controls.Add(datePicker);
             dateForm.Controls.Add(okButton);
             dateForm.ShowDialog();
+            UpdateDataGrid();
+        }
+
+        private void изменитьДатуВыездаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView5.SelectedRows.Count == 0 ||
+        dataGridView5.SelectedRows[0].Cells["DepartureDate"] == null)
+            {
+                MessageBox.Show("Выберите строку с датой для изменения!");
+                return;
+            }
+
+            int roomNumber = Convert.ToInt32(dataGridView5.SelectedRows[0].Cells["RoomNumber"].Value);
+            DateTime currentEntryDate = Convert.ToDateTime(dataGridView5.SelectedRows[0].Cells["DateOfEntry"].Value);
+            DateTime currentDepartureDate = Convert.ToDateTime(dataGridView5.SelectedRows[0].Cells["DepartureDate"].Value);
+
+            Form dateForm = new Form
+            {
+                Width = 250,
+                Height = 150,
+                Text = "Изменение даты выезда",
+                StartPosition = FormStartPosition.CenterParent
+            };
+
+            DateTimePicker datePicker = new DateTimePicker
+            {
+                Location = new Point(50, 30),
+                Width = 150,
+                Value = currentDepartureDate
+            };
+
+            Button okButton = new Button
+            {
+                Text = "OK",
+                Location = new Point(85, 70),
+                Width = 80,
+                Height = 30
+            };
+
+            okButton.Click += async (s, args) =>
+            {
+                DateTime newDepartureDate = datePicker.Value;
+
+                if (newDepartureDate <= currentEntryDate)
+                {
+                    MessageBox.Show("Дата выезда не может быть раньше даты заезда!");
+                    return;
+                }
+
+                // Проверка конфликта с учетом старых дат
+                bool isConflict = await sqlRequest.CheckDepartureConflictAsync(
+                    roomNumber,
+                    newDepartureDate,
+                    currentEntryDate,
+                    currentDepartureDate);
+
+                if (isConflict)
+                {
+                    MessageBox.Show("На выбранную дату уже существует резервация для этого номера!");
+                    return;
+                }
+
+                // Обновление записи
+                sqlRequest.UpdateReservationDepartureDate(
+                    roomNumber,
+                    newDepartureDate,
+                    currentEntryDate,
+                    currentDepartureDate);
+
+                UpdateDataGrid();
+                dateForm.Close();
+            };
+
+            dateForm.Controls.Add(datePicker);
+            dateForm.Controls.Add(okButton);
+            dateForm.ShowDialog();
+            UpdateDataGrid();
+        }
+
+        private void Delete_filter(object sender, EventArgs e)
+        {
+            panel5.Controls.Clear();
+            List<Panel> roomPanels = sqlRequest.GetRoomPanels(panel5.Width, panel5.Height);
+
+            if (roomPanels != null && roomPanels.Any())
+            {
+                int verticalSpacing = 10; // Отступ между панелями
+                int currentY = 10; // Начальная позиция по Y
+
+                foreach (var panel in roomPanels)
+                {
+                    panel.Location = new Point(10, currentY); // Устанавливаем позицию
+                    panel5.Controls.Add(panel); // Добавляем панель на panel5
+                    currentY += panel.Height + verticalSpacing; // Обновляем позицию для следующей панели
+                }
+            }
+            else
+            {
+                MessageBox.Show("Нет данных о комнатах.");
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            UpdateDataGrid();
+        }
+
+        private void Checked_Phonenumber(object sender, EventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            string text = textBox.Text;
+
+            // Удаляем лишние символы
+            text = new string(text.Where(c => char.IsDigit(c)).ToArray());
+
+            // Добавляем префикс
+            if (!text.StartsWith("7") && !text.StartsWith("8") && text.Length > 0)
+            {
+                text = "7" + text;
+            }
+
+            // Форматируем
+            if (text.Length >= 11)
+            {
+                text = "+7 (" + text.Substring(1, 3) + ") " +
+                       text.Substring(4, 3) + "-" +
+                       text.Substring(7, 2) + "-" +
+                       text.Substring(9, 2);
+            }
+
+            // Обновляем текст
+            if (textBox.Text != text)
+            {
+                textBox.Text = text;
+                textBox.SelectionStart = text.Length;
+            }
         }
     }
 }

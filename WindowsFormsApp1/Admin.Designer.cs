@@ -32,7 +32,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -40,6 +39,10 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.dataGridView5 = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.изменитьДатуЗаездаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.изменитьДатуВыездаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
@@ -87,14 +90,15 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.filter_panel = new System.Windows.Forms.Panel();
             this.filter_users = new System.Windows.Forms.Panel();
+            this.button11 = new System.Windows.Forms.Button();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.button7 = new System.Windows.Forms.Button();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.filter_users1 = new System.Windows.Forms.Panel();
             this.filter_rooms = new System.Windows.Forms.Panel();
+            this.button10 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -103,15 +107,14 @@
             this.label9 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.mySqlCommand1 = new MySql.Data.MySqlClient.MySqlCommand();
-            this.dataGridView5 = new System.Windows.Forms.DataGridView();
-            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.изменитьДатуЗаездаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.изменитьДатуВыездаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label8 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
             this.panel8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).BeginInit();
+            this.contextMenuStrip2.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
@@ -129,8 +132,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.filter_rooms.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).BeginInit();
-            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -144,7 +145,6 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.button5);
-            this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
@@ -155,7 +155,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(10, 121);
+            this.button5.Location = new System.Drawing.Point(9, 90);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(185, 23);
             this.button5.TabIndex = 4;
@@ -163,17 +163,6 @@
             this.button5.Text = "Список бронирований";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.Select_Mode);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(8, 91);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(187, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Tag = "add_user";
-            this.button4.Text = "Добавить человека";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.Select_Mode);
             // 
             // button3
             // 
@@ -251,10 +240,43 @@
             this.panel8.TabIndex = 6;
             this.panel8.Tag = "list_of_reservation";
             // 
+            // dataGridView5
+            // 
+            this.dataGridView5.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView5.ContextMenuStrip = this.contextMenuStrip2;
+            this.dataGridView5.Location = new System.Drawing.Point(13, 10);
+            this.dataGridView5.Name = "dataGridView5";
+            this.dataGridView5.Size = new System.Drawing.Size(127, 150);
+            this.dataGridView5.TabIndex = 0;
+            // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.изменитьДатуЗаездаToolStripMenuItem,
+            this.изменитьДатуВыездаToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(196, 48);
+            // 
+            // изменитьДатуЗаездаToolStripMenuItem
+            // 
+            this.изменитьДатуЗаездаToolStripMenuItem.Name = "изменитьДатуЗаездаToolStripMenuItem";
+            this.изменитьДатуЗаездаToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.изменитьДатуЗаездаToolStripMenuItem.Text = "Изменить дату заезда";
+            this.изменитьДатуЗаездаToolStripMenuItem.Click += new System.EventHandler(this.изменитьДатуЗаездаToolStripMenuItem_Click);
+            // 
+            // изменитьДатуВыездаToolStripMenuItem
+            // 
+            this.изменитьДатуВыездаToolStripMenuItem.Name = "изменитьДатуВыездаToolStripMenuItem";
+            this.изменитьДатуВыездаToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.изменитьДатуВыездаToolStripMenuItem.Text = "Изменить дату выезда";
+            this.изменитьДатуВыездаToolStripMenuItem.Click += new System.EventHandler(this.изменитьДатуВыездаToolStripMenuItem_Click);
+            // 
             // panel7
             // 
             this.panel7.AutoScroll = true;
             this.panel7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.panel7.Controls.Add(this.label8);
             this.panel7.Controls.Add(this.panel4);
             this.panel7.Controls.Add(this.numericUpDown2);
             this.panel7.Controls.Add(this.label19);
@@ -297,9 +319,9 @@
             this.panel4.Controls.Add(this.textBox3);
             this.panel4.Controls.Add(this.textBox2);
             this.panel4.Controls.Add(this.label1);
-            this.panel4.Location = new System.Drawing.Point(7, 397);
+            this.panel4.Location = new System.Drawing.Point(7, 390);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(250, 216);
+            this.panel4.Size = new System.Drawing.Size(250, 185);
             this.panel4.TabIndex = 2;
             this.panel4.Tag = "add_user";
             this.panel4.Visible = false;
@@ -474,6 +496,8 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(180, 20);
             this.textBox4.TabIndex = 10;
+            this.textBox4.Text = "+7";
+            this.textBox4.TextChanged += new System.EventHandler(this.Checked_Phonenumber);
             // 
             // textBox3
             // 
@@ -708,7 +732,6 @@
             // filter_panel
             // 
             this.filter_panel.Controls.Add(this.filter_users);
-            this.filter_panel.Controls.Add(this.filter_users1);
             this.filter_panel.Controls.Add(this.filter_rooms);
             this.filter_panel.Location = new System.Drawing.Point(3, 261);
             this.filter_panel.Name = "filter_panel";
@@ -720,17 +743,28 @@
             // filter_users
             // 
             this.filter_users.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.filter_users.Controls.Add(this.button11);
             this.filter_users.Controls.Add(this.trackBar2);
             this.filter_users.Controls.Add(this.button7);
             this.filter_users.Controls.Add(this.checkBox4);
             this.filter_users.Controls.Add(this.label12);
             this.filter_users.Controls.Add(this.checkBox3);
             this.filter_users.Controls.Add(this.checkBox2);
-            this.filter_users.Location = new System.Drawing.Point(10, 233);
+            this.filter_users.Location = new System.Drawing.Point(209, 6);
             this.filter_users.Name = "filter_users";
-            this.filter_users.Size = new System.Drawing.Size(186, 220);
+            this.filter_users.Size = new System.Drawing.Size(186, 364);
             this.filter_users.TabIndex = 1;
             this.filter_users.Tag = "list_of_peoples";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(6, 186);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(161, 23);
+            this.button11.TabIndex = 9;
+            this.button11.Text = "Сбросить";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // trackBar2
             // 
@@ -744,9 +778,9 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(3, 142);
+            this.button7.Location = new System.Drawing.Point(6, 152);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(145, 32);
+            this.button7.Size = new System.Drawing.Size(161, 26);
             this.button7.TabIndex = 8;
             this.button7.Text = "Предоставить";
             this.button7.UseVisualStyleBackColor = true;
@@ -755,7 +789,7 @@
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(3, 122);
+            this.checkBox4.Location = new System.Drawing.Point(6, 126);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(121, 17);
             this.checkBox4.TabIndex = 4;
@@ -774,7 +808,7 @@
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(3, 99);
+            this.checkBox3.Location = new System.Drawing.Point(6, 103);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(87, 17);
             this.checkBox3.TabIndex = 3;
@@ -784,25 +818,17 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(3, 76);
+            this.checkBox2.Location = new System.Drawing.Point(6, 80);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(52, 17);
             this.checkBox2.TabIndex = 2;
             this.checkBox2.Text = "Дети";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // filter_users1
-            // 
-            this.filter_users1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.filter_users1.Location = new System.Drawing.Point(206, 4);
-            this.filter_users1.Name = "filter_users1";
-            this.filter_users1.Size = new System.Drawing.Size(197, 449);
-            this.filter_users1.TabIndex = 1;
-            this.filter_users1.Tag = "list_of_reservation";
-            // 
             // filter_rooms
             // 
             this.filter_rooms.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.filter_rooms.Controls.Add(this.button10);
             this.filter_rooms.Controls.Add(this.button6);
             this.filter_rooms.Controls.Add(this.checkedListBox2);
             this.filter_rooms.Controls.Add(this.checkedListBox1);
@@ -816,11 +842,21 @@
             this.filter_rooms.TabIndex = 0;
             this.filter_rooms.Tag = "list_of_rooms";
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(6, 197);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(175, 23);
+            this.button10.TabIndex = 8;
+            this.button10.Text = "Сбросить ";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.Delete_filter);
+            // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(8, 188);
+            this.button6.Location = new System.Drawing.Point(6, 170);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(175, 32);
+            this.button6.Size = new System.Drawing.Size(175, 20);
             this.button6.TabIndex = 7;
             this.button6.Text = "Предоставить";
             this.button6.UseVisualStyleBackColor = true;
@@ -845,7 +881,7 @@
             this.checkedListBox1.Items.AddRange(new object[] {
             "Проживают",
             "Не проживают"});
-            this.checkedListBox1.Location = new System.Drawing.Point(8, 163);
+            this.checkedListBox1.Location = new System.Drawing.Point(9, 148);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(120, 19);
             this.checkedListBox1.TabIndex = 5;
@@ -853,7 +889,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(8, 147);
+            this.label11.Location = new System.Drawing.Point(8, 132);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(121, 13);
             this.label11.TabIndex = 4;
@@ -894,36 +930,15 @@
             this.mySqlCommand1.EnableCaching = false;
             this.mySqlCommand1.Transaction = null;
             // 
-            // dataGridView5
+            // label8
             // 
-            this.dataGridView5.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView5.ContextMenuStrip = this.contextMenuStrip2;
-            this.dataGridView5.Location = new System.Drawing.Point(13, 10);
-            this.dataGridView5.Name = "dataGridView5";
-            this.dataGridView5.Size = new System.Drawing.Size(127, 150);
-            this.dataGridView5.TabIndex = 0;
-            // 
-            // contextMenuStrip2
-            // 
-            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.изменитьДатуЗаездаToolStripMenuItem,
-            this.изменитьДатуВыездаToolStripMenuItem});
-            this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(196, 70);
-            // 
-            // изменитьДатуЗаездаToolStripMenuItem
-            // 
-            this.изменитьДатуЗаездаToolStripMenuItem.Name = "изменитьДатуЗаездаToolStripMenuItem";
-            this.изменитьДатуЗаездаToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.изменитьДатуЗаездаToolStripMenuItem.Text = "Изменить дату заезда";
-            this.изменитьДатуЗаездаToolStripMenuItem.Click += new System.EventHandler(this.изменитьДатуЗаездаToolStripMenuItem_Click);
-            // 
-            // изменитьДатуВыездаToolStripMenuItem
-            // 
-            this.изменитьДатуВыездаToolStripMenuItem.Name = "изменитьДатуВыездаToolStripMenuItem";
-            this.изменитьДатуВыездаToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.изменитьДатуВыездаToolStripMenuItem.Text = "Изменить дату выезда";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(37, 594);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(35, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "label8";
+            this.label8.Visible = false;
             // 
             // Admin
             // 
@@ -946,6 +961,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).EndInit();
+            this.contextMenuStrip2.ResumeLayout(false);
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -968,8 +985,6 @@
             this.filter_rooms.ResumeLayout(false);
             this.filter_rooms.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).EndInit();
-            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -981,7 +996,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
@@ -1009,7 +1023,6 @@
         private System.Windows.Forms.Panel filter_panel;
         private System.Windows.Forms.Panel filter_rooms;
         private System.Windows.Forms.Panel filter_users;
-        private System.Windows.Forms.Panel filter_users1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label label11;
@@ -1054,5 +1067,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem изменитьДатуЗаездаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem изменитьДатуВыездаToolStripMenuItem;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Label label8;
     }
 }

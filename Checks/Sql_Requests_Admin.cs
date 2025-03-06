@@ -271,29 +271,41 @@ namespace Checks
         }
 
         // Метод для создания панелей с карточками комнат
-        public List<Panel> GetRoomPanels(int panelWidth, int panelHeight, int? bedsMin = null, int? bedsMax = null, List<int> conditionIds = null, List<bool?> statuses = null)
+        public List<Panel> GetRoomPanels(
+    int panelWidth,
+    int panelHeight,
+    int? bedsMin = null,
+    int? bedsMax = null,
+    List<int> conditions = null,
+    List<bool> statuses = null)
         {
             List<Panel> roomPanels = new List<Panel>();
-            string query = "SELECT RoomNum, Beds, Extras, Image, Conditions, Status FROM Rooms ";
 
-            // Добавляем условия для фильтрации
+            string query = "SELECT RoomNum, Beds, Extras, Image, Conditions, Status FROM Rooms ";
+            bool hasWhere = false;
+
+            // Фильтр по количеству кроватей
             if (bedsMin.HasValue || bedsMax.HasValue)
             {
-                query += $" AND Beds BETWEEN {bedsMin ?? 0} AND {bedsMax ?? int.MaxValue}";
+                query += $"{(hasWhere ? " AND" : " WHERE")} Beds BETWEEN {bedsMin ?? 0} AND {bedsMax ?? int.MaxValue}";
+                hasWhere = true;
             }
 
-            if (conditionIds != null && conditionIds.Count > 0)
+            // Фильтр по состоянию комнаты (Conditions)
+            if (conditions != null && conditions.Count > 0)
             {
-                query += $" AND Conditions IN ({string.Join(",", conditionIds)})";
+                query += $"{(hasWhere ? " AND" : " WHERE")} Conditions IN ({string.Join(",", conditions)})";
+                hasWhere = true;
             }
 
+            // Фильтр по статусу (Status)
             if (statuses != null && statuses.Count > 0)
             {
-                // Преобразуем bool в int (0 или 1)
-                List<int> statusValues = statuses.Select(status => status == true ? 1 : 0).ToList();
-                query += $" AND Status IN ({string.Join(",", statusValues)})";
+                List<int> statusValues = statuses.Select(s => s ? 1 : 0).ToList();
+                query += $"{(hasWhere ? " AND" : " WHERE")} Status IN ({string.Join(",", statusValues)})";
+                hasWhere = true;
             }
-            int count = 0;
+
             try
             {
                 if (connection.State != ConnectionState.Open)
@@ -302,28 +314,28 @@ namespace Checks
                 }
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
                 {
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        DataTable dataTable = new DataTable(); // Создаем таблицу для хранения данных
-                        adapter.Fill(dataTable); // Заполняем таблицу данными из базы
-                        foreach (DataRow row in dataTable.Rows) // Итерируемся по строкам DataTable
-                        {
-                            string roomNum = row["RoomNum"].ToString();
-                            int beds = Convert.ToInt32(row["Beds"]);
-                            string extras = row["Extras"].ToString();
-                            string imagePath = row["Image"].ToString();
-                            string conditionsValue = row["Conditions"]?.ToString() ?? "3";
-                            string cond = GetConditionText(conditionsValue);
-                            bool isOccupied = row["Status"] != null && Convert.ToBoolean(row["Status"]);
+                        string roomNum = row["RoomNum"].ToString();
+                        int beds = Convert.ToInt32(row["Beds"]);
+                        string extras = row["Extras"].ToString();
+                        string imagePath = row["Image"].ToString();
+                        string conditionsValue = row["Conditions"]?.ToString() ?? "3";
+                        string cond = GetConditionText(conditionsValue);
+                        bool isOccupied = row["Status"] != null && Convert.ToBoolean(row["Status"]);
 
-                            Panel cardPanel = CreateRoomCardPanel(roomNum, beds, extras, imagePath, panelWidth, panelHeight, cond, isOccupied);
-                            roomPanels.Add(cardPanel);
-                        }
-
+                        Panel cardPanel = CreateRoomCardPanel(
+                            roomNum, beds, extras, imagePath,
+                            panelWidth, panelHeight, cond, isOccupied
+                        );
+                        roomPanels.Add(cardPanel);
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -336,6 +348,7 @@ namespace Checks
                     connection.Close();
                 }
             }
+
             return roomPanels;
         }
 
@@ -655,7 +668,12 @@ namespace Checks
         }
 
 
-        public async Task<bool> CheckReservationConflictAsync(int roomNumber, DateTime newEntryDate, DateTime currentDepartureDate)
+        public async Task<bool> CheckReservationConflictAsync(
+    int roomNumber,
+    DateTime newEntryDate,
+    DateTime currentDepartureDate,
+    DateTime oldEntryDate,
+    DateTime oldDepartureDate)
         {
             try
             {
@@ -667,7 +685,12 @@ namespace Checks
                 string query = @"
             SELECT COUNT(*) 
             FROM Reservation 
-            WHERE RoomNumber = @RoomNumber AND (
+            WHERE RoomNumber = @RoomNumber 
+            AND NOT (
+                DateOfEntry = @OldEntryDate 
+                AND DepartureDate = @OldDepartureDate
+            )
+            AND (
                 (@NewEntryDate BETWEEN DateOfEntry AND DepartureDate) OR
                 (@CurrentDepartureDate BETWEEN DateOfEntry AND DepartureDate) OR
                 (DateOfEntry BETWEEN @NewEntryDate AND @CurrentDepartureDate) OR
@@ -676,24 +699,23 @@ namespace Checks
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    // Добавляем параметры
                     command.Parameters.AddWithValue("@RoomNumber", roomNumber);
                     command.Parameters.AddWithValue("@NewEntryDate", newEntryDate.Date);
                     command.Parameters.AddWithValue("@CurrentDepartureDate", currentDepartureDate.Date);
+                    command.Parameters.AddWithValue("@OldEntryDate", oldEntryDate.Date);
+                    command.Parameters.AddWithValue("@OldDepartureDate", oldDepartureDate.Date);
 
-                    // Выполняем запрос асинхронно и получаем результат
                     int count = Convert.ToInt32(await command.ExecuteScalarAsync());
-                    return count > 0; // Если найдены конфликты, возвращаем true
+                    return count > 0;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при проверке конфликта резервации: {ex.Message}");
-                return false; // В случае ошибки считаем, что конфликт не обнаружен
+                MessageBox.Show($"Ошибка при проверке конфликта: {ex.Message}");
+                return true; // Предпочтительнее считать конфликт при ошибке
             }
             finally
             {
-                // Закрываем соединение после выполнения запроса
                 if (connection.State == ConnectionState.Open)
                 {
                     connection.Close();
@@ -701,11 +723,18 @@ namespace Checks
             }
         }
 
-        public void UpdateReservationEntryDate(int roomNumber, DateTime newEntryDate, DateTime currentDepartureDate)
+
+
+        //Смена значение таблицы резервации
+        public void UpdateReservationEntryDate(
+    int roomNumber,
+    DateTime newEntryDate,
+    DateTime currentDepartureDate,
+    DateTime oldEntryDate,
+    DateTime oldDepartureDate)
         {
             try
             {
-                // Проверяем состояние соединения и открываем его при необходимости
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();
@@ -714,16 +743,17 @@ namespace Checks
                 string query = @"
             UPDATE Reservation 
             SET DateOfEntry = @NewEntryDate 
-            WHERE RoomNumber = @RoomNumber AND DateOfEntry = @CurrentEntryDate";
+            WHERE RoomNumber = @RoomNumber 
+            AND DateOfEntry = @OldEntryDate 
+            AND DepartureDate = @OldDepartureDate";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    // Добавляем параметры
                     command.Parameters.AddWithValue("@NewEntryDate", newEntryDate.Date);
                     command.Parameters.AddWithValue("@RoomNumber", roomNumber);
-                    command.Parameters.AddWithValue("@CurrentEntryDate", currentDepartureDate.Date);
+                    command.Parameters.AddWithValue("@OldEntryDate", oldEntryDate.Date);
+                    command.Parameters.AddWithValue("@OldDepartureDate", oldDepartureDate.Date);
 
-                    // Выполняем запрос
                     int rowsAffected = command.ExecuteNonQuery();
 
                     if (rowsAffected > 0)
@@ -732,7 +762,7 @@ namespace Checks
                     }
                     else
                     {
-                        MessageBox.Show("Не удалось обновить дату заезда.");
+                        MessageBox.Show("Не удалось обновить дату заезда. Возможно, данные изменились.");
                     }
                 }
             }
@@ -742,11 +772,223 @@ namespace Checks
             }
             finally
             {
-                // Закрываем соединение после выполнения запроса
                 if (connection.State == ConnectionState.Open)
                 {
                     connection.Close();
                 }
+            }
+        }
+
+
+        public void UpdateReservationDepartureDate(
+    int roomNumber,
+    DateTime newDepartureDate,
+    DateTime oldEntryDate,
+    DateTime oldDepartureDate)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                string query = @"
+            UPDATE Reservation 
+            SET DepartureDate = @NewDepartureDate 
+            WHERE RoomNumber = @RoomNumber 
+            AND DateOfEntry = @OldEntryDate 
+            AND DepartureDate = @OldDepartureDate";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@NewDepartureDate", newDepartureDate.Date);
+                    command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                    command.Parameters.AddWithValue("@OldEntryDate", oldEntryDate.Date);
+                    command.Parameters.AddWithValue("@OldDepartureDate", oldDepartureDate.Date);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Дата выезда успешно обновлена!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Не удалось обновить дату выезда. Возможно, данные изменились.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении даты выезда: {ex.Message}");
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public async Task<bool> CheckDepartureConflictAsync(
+    int roomNumber,
+    DateTime newDepartureDate,
+    DateTime oldEntryDate,
+    DateTime oldDepartureDate)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                string query = @"
+            SELECT COUNT(*) 
+            FROM Reservation 
+            WHERE RoomNumber = @RoomNumber 
+            AND NOT (
+                DateOfEntry = @OldEntryDate 
+                AND DepartureDate = @OldDepartureDate
+            )
+            AND (
+                (@NewDepartureDate BETWEEN DateOfEntry AND DepartureDate) OR
+                (@OldEntryDate BETWEEN DateOfEntry AND DepartureDate) OR
+                (DateOfEntry BETWEEN @OldEntryDate AND @NewDepartureDate) OR
+                (DepartureDate BETWEEN @OldEntryDate AND @NewDepartureDate)
+            )";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RoomNumber", roomNumber);
+                    command.Parameters.AddWithValue("@NewDepartureDate", newDepartureDate.Date);
+                    command.Parameters.AddWithValue("@OldEntryDate", oldEntryDate.Date);
+                    command.Parameters.AddWithValue("@OldDepartureDate", oldDepartureDate.Date);
+
+                    int count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    return count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при проверке конфликта: {ex.Message}");
+                return true; // Предпочтительнее считать конфликт при ошибке
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+
+        public DataTable GetUsersForGrid(int minYear, int maxYear, List<bool> children, List<bool> reservations, List<bool> livesIn)
+        {
+            string query = "SELECT * FROM Users WHERE 1=1"; 
+
+            if (minYear > 0 && maxYear > 0)
+            {
+                query += $" AND YEAR(`Год рождения`) BETWEEN {minYear} AND {maxYear}";
+            }
+
+            if (children.Any())
+            {
+                query += $" AND Children IN ({string.Join(",", children.Select(b => b ? 1 : 0))})";
+            }
+
+            if (reservations.Any())
+            {
+                query += $" AND Reservation IN ({string.Join(",", reservations.Select(b => b ? 1 : 0))})";
+            }
+
+            if (livesIn.Any())
+            {
+                query += $" AND Lives_in IN ({string.Join(",", livesIn.Select(b => b ? 1 : 0))})";
+            }
+
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                {
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}");
+                return new DataTable();
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public int AddUser(
+    string fio,
+    string passport,
+    string phone,
+    string email,
+    DateTime birthDate,
+    bool children,
+    string preferences)
+        {
+            string query = @"
+        INSERT INTO Users (
+            ФИО, 
+            Паспорт, 
+            Телефон, 
+            Почта, 
+            `Год рождения`, 
+            Children, 
+            Reservation, 
+            Lives_in, 
+            Предпочтения
+        ) VALUES (
+            @FIO, 
+            @Passport, 
+            @Phone, 
+            @Email, 
+            @BirthDate, 
+            @Children, 
+            @Reservation, 
+            @LivesIn, 
+            @Preferences
+        )";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@FIO", fio);
+                command.Parameters.AddWithValue("@Passport", passport);
+                command.Parameters.AddWithValue("@Phone", phone);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@BirthDate", birthDate.ToString("yyyy-MM-dd"));
+                command.Parameters.AddWithValue("@Children", children ? 1 : 0);
+                command.Parameters.AddWithValue("@Reservation",  0);
+                command.Parameters.AddWithValue("@LivesIn",  0);
+                command.Parameters.AddWithValue("@Preferences", preferences);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                // Возвращаем ID добавленного пользователя:
+                return Convert.ToInt32(command.LastInsertedId);
             }
         }
 
