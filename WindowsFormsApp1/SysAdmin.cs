@@ -34,9 +34,9 @@ namespace WindowsFormsApp1
             }
 
             // Дополнительные настройки столбцов (опционально)
+            dataGridView1.Columns [ "RoleName" ].HeaderText = "Роль";
             dataGridView1.Columns [ "Login" ].HeaderText = "Логин";
             dataGridView1.Columns [ "Password" ].HeaderText = "Пароль";
-            dataGridView1.Columns [ "Role" ].HeaderText = "Роль";
             dataGridView1.Columns [ "FIO" ].HeaderText = "ФИО";
         }
 
@@ -74,11 +74,24 @@ namespace WindowsFormsApp1
 
         }
 
+        public int GetFilledRowsCountLINQ (DataGridView dataGridView)
+        {
+            return dataGridView.Rows.Cast<DataGridViewRow>( )
+                .Count(row => row.Cells.Cast<DataGridViewCell>( )
+                    .Any(cell => cell.Value != null && !string.IsNullOrWhiteSpace(cell.Value.ToString( ))));
+        }
+
         private void AddNew_Click (object sender, EventArgs e)
         {
             if(LogAdd.Text!="" && PassAdd.Text!="" && FIOAdd.Text!="" && ComboAdd.SelectedIndex!=0)
             {
-
+                int count = GetFilledRowsCountLINQ(dataGridView1);
+                count++;
+                string login = LogAdd.Text;
+                string password = PassAdd.Text;
+                string fio=FIOAdd.Text;
+                int role = ComboAdd.SelectedIndex;
+                req.AddNewWorker(login,password,fio,role,count);
             }
             else
             {
