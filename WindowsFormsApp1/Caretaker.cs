@@ -68,7 +68,8 @@ namespace WindowsFormsApp1
                     Dock = DockStyle.None,
                     Location = new Point(0, 30), // Оставляем место для текста роли
                     Size = new Size(panel.Width, panel.Height - 50), // Устанавливаем размеры
-                    DataSource = workersData
+                    DataSource = workersData,
+                    BackgroundColor= Color.FromArgb(0xA3, 0xD6, 0xB8)
                 };
                 panel.Controls.Add(dataGridView);
 

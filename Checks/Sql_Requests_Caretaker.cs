@@ -88,7 +88,7 @@ namespace Checks
             {
                 Size = new Size(panelWidth - 20, (int) (panelHeight * 0.2)),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.White
+                BackColor = Color.FromArgb(135, 182, 200),
             };
 
             // Добавляем PictureBox для изображения

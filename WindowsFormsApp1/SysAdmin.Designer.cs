@@ -45,6 +45,7 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(163)))), ((int)(((byte)(214)))), ((int)(((byte)(184)))));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Right;
             this.dataGridView1.Location = new System.Drawing.Point(305, 0);
@@ -92,12 +93,16 @@
             // 
             // AddNew
             // 
+            this.AddNew.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(163)))), ((int)(((byte)(214)))), ((int)(((byte)(184)))));
+            this.AddNew.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(208)))), ((int)(((byte)(152)))));
+            this.AddNew.FlatAppearance.BorderSize = 2;
+            this.AddNew.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNew.Location = new System.Drawing.Point(47, 242);
             this.AddNew.Name = "AddNew";
             this.AddNew.Size = new System.Drawing.Size(75, 23);
             this.AddNew.TabIndex = 5;
             this.AddNew.Text = "Добавить";
-            this.AddNew.UseVisualStyleBackColor = true;
+            this.AddNew.UseVisualStyleBackColor = false;
             this.AddNew.Click += new System.EventHandler(this.AddNew_Click);
             // 
             // label1
@@ -162,6 +167,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Name = "SysAdmin";
             this.Text = "SysAdmin";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.SysAdmin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.AddNewPanel.ResumeLayout(false);
