@@ -12,7 +12,7 @@ using Checks;
 
 namespace WindowsFormsApp1
 {
-    public partial class Admin : Form
+        public partial class Admin : Form
     {
         private Timer timer;
         private int targetX; 
@@ -30,33 +30,29 @@ namespace WindowsFormsApp1
         private bool _isUpdating = false;
         private Label labelFIO;
         private TextBox textBoxFIO;
-
         private Label labelPassport;
         private TextBox textBoxPassport;
-
         private Label labelEmail;
         private TextBox textBoxEmail;
-
         private Label labelPhone;
         private TextBox textBoxPhone;
-
         private Label labelBirthDate;
         private DateTimePicker dateTimePickerBirth;
-
         private Label labelPreferences;
         private TextBox textBoxPreferences;
-
         private Label labelChildren;
         private CheckBox checkBoxChildren;
-
         private Label labelReservation;
         private CheckBox checkBoxReservation;
-
         private Label labelLivesIn;
         private CheckBox checkBoxLivesIn;
-
         private Button buttonAdd;
+        private ListBox dynamicListBox;
+        private int? selectedRoomId; 
+        private int? selectedUserId; 
+        private int? selectedReservationId;
 
+        private string mode = "list_of_rooms";
         public Admin()
         {
             InitializeComponent();
@@ -131,7 +127,7 @@ namespace WindowsFormsApp1
             panel2.Height = this.Height - ((90 * this.Height) / 100);
             panel2.Location= new System.Drawing.Point(0,0);
             //search
-            textBox1.Width = this.Width - ((20 * this.Width) / 100);
+            textBox1.Width = this.Width - ((25 * this.Width) / 100);
             textBox1.Height = panel2.Height - ((70 * panel2.Height) / 100);
             textBox1.Location = new System.Drawing.Point(
               (panel2.Width - textBox1.Width) / 2, (panel2.Height - textBox1.Height) / 2);
@@ -142,11 +138,18 @@ namespace WindowsFormsApp1
             pictureBox1.Height = panel2.Height - ((70 * panel2.Height) / 100);
             pictureBox1.Width = pictureBox1.Height;
 
+            //Логотип
+            pictureBox2.Location = new System.Drawing.Point(textBox1.Right + 10, (int)(panel2.Height * 0.1));
+            pictureBox2.Image= System.Drawing.Image.FromFile("C:\\Users\\ПК\\Desktop\\tw\\TeamWork_hostel\\WindowsFormsApp1\\Resources\\лого.png");
+            pictureBox2.Size = new Size((int)((this.Width - textBox1.Width) / 2 * 0.7), (int)(panel2.Height * 0.7));
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+
+
             //side menu
             panel1.Width = (this.Width - textBox1.Width)/2;
             panel1.Height = this.Height-panel2.Height;
             panel1.Location = new System.Drawing.Point(-panel1.Width, panel2.Height);
-            panel1.BackColor = System.Drawing.Color.Red;
+          /*  panel1.BackColor = System.Drawing.Color.Red;*/
             
             //main place
             panel3.Location= new System.Drawing.Point(
@@ -227,14 +230,10 @@ namespace WindowsFormsApp1
             if (panel1.Location.X < 0)
             {
                 targetX = 0;
-                panel3.BackColor = Color.FromArgb(173, 183, 185);
-                this.BackColor= Color.FromArgb(173, 183, 185);
             }
             else
             {
                 targetX = -panel1.Width;
-                panel3.BackColor = Color.FromArgb(243, 253, 255);
-                this.BackColor = Color.FromArgb(243, 253, 255);
             }
             timer.Start();
             
@@ -310,15 +309,19 @@ namespace WindowsFormsApp1
                     switch (panel1.Tag.ToString())
                     {
                         case "list_of_rooms":
+                            mode = "list_of_rooms";
                             LoadRoomPanels();
                             break;
                         case "list_of_peoples":
+                            mode = "list_of_peoples";
                             LoadListOfPeoples();
                             break;
                         case "populate":
+                            mode = "populate";
                             Add_Populate();
                             break;
                         case "list_of_reservation":
+                            mode = "list_of_reservation";
                             LoadReservation();
                             break;
                     }
@@ -398,7 +401,14 @@ namespace WindowsFormsApp1
                 Text = "Добавить пользователя",
                 Width = 150,
                 Height = 30,
-                Visible = true
+                Visible = true,
+                BackColor= Color.FromArgb(0xA3, 0xD6, 0xB8),
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance =
+                {
+                    BorderColor = Color.FromArgb(113, 208, 152), 
+                    BorderSize = 2                              
+                }
             };
 
 
@@ -1255,5 +1265,301 @@ namespace WindowsFormsApp1
                 textBox.SelectionStart = text.Length;
             }
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = textBox1.Text.Trim();
+            if (string.IsNullOrEmpty(searchText))
+            {
+                dynamicListBox?.Hide();
+                return;
+            }
+            if (dynamicListBox == null)
+            {
+                dynamicListBox = new ListBox
+                {
+                    Width = textBox1.Width,
+                    Height = 100,
+                    Location = new Point(textBox1.Left, textBox1.Bottom),
+                    Visible = false
+                };
+                this.Controls.Add(dynamicListBox);
+                dynamicListBox.BringToFront();
+                dynamicListBox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
+            }
+            dynamicListBox.Items.Clear();
+            mode = panel3.Controls.OfType<Panel>()
+                .FirstOrDefault(p => p.Visible)?.Tag?.ToString() ?? "default";
+            switch (mode)
+            {
+                case "list_of_rooms":
+                    /*FilterRooms(searchText);*/
+                    FilterPanelsByTag(searchText);
+                    break;
+                case "list_of_peoples":
+                    FilterPeoples(searchText);
+                    break;
+                case "list_of_reservation":
+                    FilterReservations(searchText);
+                    break;
+                case "populate":
+                    FilterRooms(searchText);
+                    FilterPeoples(searchText,'s');
+                    break;
+                default:
+                    FilterSideMenuFunctions(searchText);
+                    break;
+            }
+            dynamicListBox.Visible = dynamicListBox.Items.Count > 0;
+        }
+        private void FilterPeoples(string searchText)
+        {
+            var filteredData = dataGridView1.Rows
+         .Cast<DataGridViewRow>()
+         .Where(row => row.Cells["ФИО"].Value?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+         .Select(row => row.Cells["ФИО"].Value?.ToString())
+         .Distinct()
+         .ToList();
+            dynamicListBox.Items.Clear();
+            dynamicListBox.Items.AddRange(filteredData.ToArray());
+            dynamicListBox.Visible = dynamicListBox.Items.Count > 0;
+        }
+
+        private void FilterPeoples(string searchText,char c)
+        {
+            var filteredData = dataGridView2.Rows
+         .Cast<DataGridViewRow>()
+         .Where(row => row.Cells["ФИО"].Value?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+         .Select(row => row.Cells["ФИО"].Value?.ToString())
+         .Distinct()
+         .ToList();
+            dynamicListBox.Items.AddRange(filteredData.ToArray());
+            dynamicListBox.Visible = dynamicListBox.Items.Count > 0;
+        }
+
+        private void FilterRooms(string searchText)
+        {
+            dynamicListBox.Items.Clear();
+            var filteredData = dataGridView3.Rows
+                .Cast<DataGridViewRow>()
+                .Where(row => row.Cells["RoomNum"].Value?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Select(row => row.Cells["RoomNum"].Value?.ToString())
+                .Distinct()
+                .ToList();
+            dynamicListBox.Items.AddRange(filteredData.ToArray());
+        }
+
+
+        private void FilterReservations(string searchText)
+        {
+            var reservations = sqlRequest.ExecuteQuery("Reservation").AsEnumerable()
+         .Where(row => row["IDReser"].ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+         .Select(row => new
+         {
+             Id = Convert.ToInt32(row["IDReser"]),
+             Name = row["IDReser"].ToString()
+         })
+         .ToList();
+
+            dynamicListBox.Items.Clear();
+            dynamicListBox.Items.AddRange(reservations.Select(r => r.Name).ToArray());
+
+            for (int i = 0; i < reservations.Count; i++)
+            {
+                dynamicListBox.Items[i] = new ListBoxItem
+                {
+                    Text = reservations[i].Name,
+                    Id = reservations[i].Id
+                };
+            }
+        }
+
+        private void FilterSideMenuFunctions(string searchText)
+        {
+            // Пример фильтрации функций бокового меню
+            var functions = panel1.Controls.OfType<Button>()
+        .Where(btn => btn.Text.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+        .Select(btn => btn.Text)
+        .ToList();
+
+            dynamicListBox.Items.AddRange(functions.ToArray());
+        }
+
+        private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dynamicListBox.SelectedItem == null) return;
+           
+            
+            
+            switch (mode)
+            {
+                case "list_of_rooms":
+                    var item = dynamicListBox.SelectedItem as ListBoxItem;
+                    if (item == null) return;
+                    dynamicListBox.Visible = false;
+                    selectedRoomId = item.Id;
+                    ShowOnlySelectedPanel(item.Id);
+                    break;
+                case "list_of_peoples":
+                    var selectedValue = dynamicListBox.SelectedItem.ToString();
+                    dynamicListBox.Visible = false;
+                    var row = dataGridView1.Rows
+                        .Cast<DataGridViewRow>()
+                        .FirstOrDefault(r => r.Cells["ФИО"].Value?.ToString() == selectedValue);
+                    if (row != null)
+                    {
+                        
+                        // Выделяем строку
+                        dataGridView1.ClearSelection();
+                        row.Selected = true;
+
+                        // Прокручиваем к строке
+                        dataGridView1.FirstDisplayedScrollingRowIndex = row.Index;
+                    }
+                    break;
+                case "list_of_reservation":
+                    break;
+                case "populate":
+                    var selectedValue1 = dynamicListBox.SelectedItem.ToString();
+                    dynamicListBox.Visible = false;
+                    var userRow = dataGridView2.Rows
+                        .Cast<DataGridViewRow>()
+                        .FirstOrDefault(r => r.Cells["ФИО"].Value?.ToString() == selectedValue1);
+                    if (userRow != null)
+                    {
+                        dataGridView2.ClearSelection();
+                        userRow.Selected = true;
+                        dataGridView2.FirstDisplayedScrollingRowIndex = userRow.Index;
+                    }
+                    var roomRow = dataGridView3.Rows
+                        .Cast<DataGridViewRow>()
+                        .FirstOrDefault(r => r.Cells["RoomNum"].Value?.ToString() == selectedValue1);
+
+                    if (roomRow != null)
+                    {
+                        dataGridView3.ClearSelection();
+                        roomRow.Selected = true;
+                        dataGridView3.FirstDisplayedScrollingRowIndex = roomRow.Index;
+                    }
+                    break;
+            }
+        }
+        private void ShowOnlySelectedPanel(int roomId)
+        {
+            // Находим панель с выбранной комнатой
+            var selectedPanel = panel5.Controls.OfType<Panel>()
+                .FirstOrDefault(p => p.Tag != null && Convert.ToInt32(p.Tag) == roomId);
+
+            if (selectedPanel == null)
+            {
+                MessageBox.Show("Комната не найдена.");
+                return;
+            }
+            Form roomDetailsForm = new Form
+            {
+                Width = 400, // Ширина формы
+                Height = 200, // Высота формы
+                Text = "Информация о комнате", // Заголовок формы
+                StartPosition = FormStartPosition.CenterParent // Позиция формы по центру родительского окна
+            };
+            PictureBox roomImage = new PictureBox
+            {
+                Size = new Size(80, 100), 
+                Location = new Point(10, 10), // Позиция изображения
+                SizeMode = PictureBoxSizeMode.StretchImage, // Режим отображения изображения
+                BackColor = Color.LightGray 
+            };
+            Label roomNumberLabel = new Label
+            {
+                Text = $"Номер: {selectedPanel.Tag}", // Номер комнаты из Tag панели
+                Font = new Font("Arial", 12, FontStyle.Bold), // Шрифт и стиль
+                Location = new Point(roomImage.Right + 10, 10), // Позиция Label
+                AutoSize = true // Автоматический размер
+            };
+            Label bedsLabel = new Label
+            {
+                Text = $"Кровати: {GetControlText(selectedPanel, "bedsLabel")}", // Текст из Label на панели
+                Font = new Font("Arial", 10), // Шрифт
+                Location = new Point(roomImage.Right + 10, roomNumberLabel.Bottom + 5), // Позиция
+                AutoSize = true // Автоматический размер
+            };
+            Label extrasLabel = new Label
+            {
+                Text = $"Услуги: {GetControlText(selectedPanel, "extrasLabel")}", 
+                Font = new Font("Arial", 10), 
+                Location = new Point(roomImage.Right + 10, bedsLabel.Bottom + 5), 
+                AutoSize = true, 
+                MaximumSize = new Size(roomDetailsForm.Width - roomImage.Width - 30, 0) 
+            };
+            
+            roomDetailsForm.Controls.Add(roomImage);
+            roomDetailsForm.Controls.Add(roomNumberLabel);
+            roomDetailsForm.Controls.Add(bedsLabel);
+            roomDetailsForm.Controls.Add(extrasLabel);
+            roomDetailsForm.ShowDialog();
+        }
+
+        private void FilterRoomsById(int roomId)
+        {
+            panel5.Controls.Clear();
+
+            // Загружаем только выбранную комнату
+            List<Panel> filteredRooms = sqlRequest.GetRoomPanels(panel5.Width, panel5.Height)
+                .Where(p => Convert.ToInt32(p.Tag) == roomId)
+                .ToList();
+
+            if (filteredRooms.Any())
+            {
+                int verticalSpacing = 10;
+                int currentY = 10;
+
+                foreach (var panel in filteredRooms)
+                {
+                    panel.Location = new Point(10, currentY);
+                    panel5.Controls.Add(panel);
+                    currentY += panel.Height + verticalSpacing;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Комната не найдена.");
+            }
+        }
+
+        private void FilterPanelsByTag(string searchText)
+        {
+            
+            var filteredPanels = panel5.Controls.OfType<Panel>()
+                .Where(p => p.Tag != null && p.Tag.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            if (filteredPanels.Any())
+            {
+                dynamicListBox.Items.Clear();
+                foreach (var panel in filteredPanels)
+                {
+                    dynamicListBox.Items.Add(new ListBoxItem
+                    {
+                        Text = panel.Tag.ToString(),
+                        Id = Convert.ToInt32(panel.Tag)
+                    });
+                }
+            }
+        }
+
+        private string GetControlText(Panel cardPanel, string controlName)
+        {
+            var control = cardPanel.Controls.OfType<Label>().FirstOrDefault(c => c.Name == controlName);
+            return control?.Text ?? "N/A";
+        }
+        
+
+    }
+    public class ListBoxItem
+    {
+        public string Text { get; set; }
+        public int Id { get; set; }
+
+        public override string ToString() => Text;
     }
 }

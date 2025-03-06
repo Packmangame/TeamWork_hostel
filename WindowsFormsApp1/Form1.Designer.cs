@@ -42,7 +42,7 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.Tan;
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(182)))), ((int)(((byte)(200)))));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.LogIn);
             this.panel1.Controls.Add(this.Enter);
@@ -57,33 +57,36 @@
             // LogIn
             // 
             this.LogIn.AutoSize = true;
-            this.LogIn.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.LogIn.Location = new System.Drawing.Point(74, 21);
+            this.LogIn.Font = new System.Drawing.Font("Tahoma", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LogIn.Location = new System.Drawing.Point(83, 22);
             this.LogIn.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.LogIn.Name = "LogIn";
-            this.LogIn.Size = new System.Drawing.Size(63, 26);
+            this.LogIn.Size = new System.Drawing.Size(68, 27);
             this.LogIn.TabIndex = 3;
             this.LogIn.Text = "Вход";
             // 
             // Enter
             // 
-            this.Enter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Enter.Location = new System.Drawing.Point(73, 187);
+            this.Enter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(163)))), ((int)(((byte)(214)))), ((int)(((byte)(184)))));
+            this.Enter.FlatAppearance.BorderSize = 0;
+            this.Enter.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.Enter.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Enter.Location = new System.Drawing.Point(72, 190);
             this.Enter.Name = "Enter";
             this.Enter.Size = new System.Drawing.Size(95, 30);
             this.Enter.TabIndex = 2;
             this.Enter.Text = "Войти";
-            this.Enter.UseVisualStyleBackColor = true;
+            this.Enter.UseVisualStyleBackColor = false;
             this.Enter.Click += new System.EventHandler(this.Entrance);
             // 
             // PassLine
             // 
-            this.PassLine.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.PassLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PassLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.PassLine.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(182)))), ((int)(((byte)(200)))));
+            this.PassLine.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PassLine.Font = new System.Drawing.Font("Tahoma", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.PassLine.Location = new System.Drawing.Point(13, 127);
             this.PassLine.Name = "PassLine";
-            this.PassLine.Size = new System.Drawing.Size(217, 23);
+            this.PassLine.Size = new System.Drawing.Size(217, 17);
             this.PassLine.TabIndex = 1;
             this.PassLine.Tag = "Введите Пароль";
             this.PassLine.Text = "Введите Пароль";
@@ -92,12 +95,12 @@
             // 
             // LoginLine
             // 
-            this.LoginLine.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.LoginLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LoginLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LoginLine.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(182)))), ((int)(((byte)(200)))));
+            this.LoginLine.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LoginLine.Font = new System.Drawing.Font("Tahoma", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.LoginLine.Location = new System.Drawing.Point(13, 74);
             this.LoginLine.Name = "LoginLine";
-            this.LoginLine.Size = new System.Drawing.Size(217, 23);
+            this.LoginLine.Size = new System.Drawing.Size(217, 17);
             this.LoginLine.TabIndex = 0;
             this.LoginLine.Tag = "Введите Логин";
             this.LoginLine.Text = "Введите Логин";
@@ -138,7 +141,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Moccasin;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(253)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);

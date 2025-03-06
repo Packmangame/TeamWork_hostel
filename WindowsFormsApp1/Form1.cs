@@ -12,12 +12,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Checks;
+using System.Drawing.Drawing2D;
 
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+
+
+
+
         private MySqlConnection connection;
 
         Sql_Requests_Enter enter = new Sql_Requests_Enter( );
@@ -43,7 +48,6 @@ namespace WindowsFormsApp1
             connection = new MySqlConnection(connectionString);
         }
 
-
         private void Form1_Load(object sender, EventArgs e)
         {
             
@@ -52,7 +56,6 @@ namespace WindowsFormsApp1
                 (this.ClientSize.Width - panel1.Width) / 2,
                 (this.ClientSize.Height - panel1.Height) / 2
             );
-
             LoginLine.Location = new System.Drawing.Point(
                (panel1.Width - LoginLine.Width) / 2,
                (panel1.Height - LoginLine.Height) / 2
@@ -86,7 +89,7 @@ namespace WindowsFormsApp1
                 Size = new Size(
             (PassLine.Width + 2),
             (PassLine.Height + 2)
-        ),
+               ),
                 BackColor = Color.White
             };
 
@@ -105,6 +108,8 @@ namespace WindowsFormsApp1
             panel1.Controls.Add(labelss);
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(panel3);
+
+            Enter.BackColor= Color.FromArgb(0xA3, 0xD6, 0xB8);
 
 
         }

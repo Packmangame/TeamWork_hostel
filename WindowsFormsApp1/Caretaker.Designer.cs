@@ -69,6 +69,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Caretaker";
             this.Text = "Form2";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Caretaker_Load);
             this.ResumeLayout(false);
 

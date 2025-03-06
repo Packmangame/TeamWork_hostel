@@ -378,7 +378,8 @@ namespace Checks
             {
                 Size = new Size(panelWidth - 20, 140), // Высота панели 140
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.White
+                BackColor = Color.FromArgb(135,182,200),
+                Tag= roomNum.ToString()
             };
 
             // Добавляем PictureBox для изображения
@@ -398,11 +399,11 @@ namespace Checks
             // Добавляем Label для номера комнаты
             Label roomNumberLabel = new Label
             {
-                Text = $"Номер: {roomNum}",
+                Text = $"Номер: {roomNum}/{cardPanel.Tag}",
                 Font = new Font("Arial", 12, FontStyle.Bold),
                 Location = new Point(roomImage.Right + 10, 10),
                 AutoSize = true,
-                BackColor = Color.LightBlue // Для отладки
+               
             };
             cardPanel.Controls.Add(roomNumberLabel);
 
@@ -413,7 +414,8 @@ namespace Checks
                 Font = new Font("Arial", 10),
                 Location = new Point(roomImage.Right + 10, roomNumberLabel.Bottom + 5),
                 AutoSize = true,
-                BackColor = Color.LightGreen // Для отладки
+                Name= "bedsLabel"
+
             };
             cardPanel.Controls.Add(bedsLabel);
 
@@ -425,7 +427,8 @@ namespace Checks
                 Location = new Point(roomImage.Right + 10, bedsLabel.Bottom + 5),
                 AutoSize = true,
                 MaximumSize = new Size(cardPanel.Width - roomImage.Width - 20, 0),
-                BackColor = Color.LightYellow // Для отладки
+                Name = "extrasLabel"
+
             };
             cardPanel.Controls.Add(extrasLabel);
 
@@ -437,7 +440,8 @@ namespace Checks
                 Location = new Point(roomImage.Right + 10, extrasLabel.Bottom + 5),
                 AutoSize = true,
                 MaximumSize = new Size(cardPanel.Width - roomImage.Width - 20, 0),
-                BackColor = Color.LightPink // Для отладки
+                Name = "condLabel"
+
             };
             cardPanel.Controls.Add(condLabel);
 
@@ -448,7 +452,8 @@ namespace Checks
                 Location = new Point(roomImage.Right + 10, condLabel.Bottom + 5),
                 AutoSize = true,
                 Text = isOccupied ? "Заселено" : "Не живут",
-                BackColor = Color.LightCyan // Для отладки
+                Name = "statusCheckBox"
+
             };
 
             // Обработчик события изменения состояния CheckBox
