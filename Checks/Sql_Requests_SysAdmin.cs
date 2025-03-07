@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,7 +58,7 @@ namespace Checks
             }
         }
 
-        public void AddNewWorker (string log, string pass, string fio, int role,int id)
+        public void AddNewWorker (string log, string pass, string fio, int role, int id)
         {
             try
             {
@@ -113,8 +114,8 @@ namespace Checks
             catch (Exception ex)
             {
                 Console.WriteLine("Общая ошибка: " + ex.Message);
-                
-               throw;
+
+                throw;
             }
         }
 
@@ -125,6 +126,75 @@ namespace Checks
             using (MySqlCommand command = new MySqlCommand(query, connection, transaction))
             {
                 return Convert.ToInt32(command.ExecuteScalar( ));
+            }
+        }
+
+
+        public void DeleteWorkerFromDatabase (string login)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open( );
+                string query = @"
+                DELETE FROM Workers_logs WHERE Login = @Login;
+                DELETE FROM Workers WHERE IDWorker = (
+                    SELECT WorkerID FROM Workers_logs WHERE Login = @Login
+                );";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Login", login);
+                    command.ExecuteNonQuery( );
+                }
+            }
+        }
+
+        public void UpdateWorker (string oldLogin, string newLogin, string newPassword, string newFIO, string newRoleName)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open( );
+
+                // Используем CASE для преобразования названия роли в индекс
+                string query = @"
+                UPDATE Workers 
+                SET FIO = @FIO 
+                WHERE IDWorker = (
+                    SELECT WorkerID 
+                    FROM Workers_logs 
+                    WHERE Login = @OldLogin
+                );
+
+                UPDATE Workers_logs 
+                SET 
+                    Login = @Login, 
+                    Password = @Password, 
+                    Role = (
+                        CASE @RoleName
+                            WHEN 'Админ' THEN 1
+                            WHEN 'Завхоз' THEN 2
+                            WHEN 'Кладовщик' THEN 3
+                            WHEN 'Сис.Администратор' THEN 4
+                            WHEN 'Уборщик' THEN 5
+                            WHEN 'Строитель' THEN 6
+                            ELSE @RoleName -- Если роль не найдена, можно вернуть ошибку
+                        END
+                    ) 
+                WHERE Login = @OldLogin;";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@OldLogin", oldLogin);
+                    command.Parameters.AddWithValue("@Login", newLogin);
+                    command.Parameters.AddWithValue("@Password", newPassword);
+                    command.Parameters.AddWithValue("@RoleName", newRoleName); // Передаем название роли
+                    command.Parameters.AddWithValue("@FIO", newFIO);
+
+                    int rowsAffected = command.ExecuteNonQuery( );
+
+                    if (rowsAffected == 0)
+                        throw new Exception("Работник не найден");
+                }
             }
         }
     }
